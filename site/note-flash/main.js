@@ -11,6 +11,7 @@ import { Sound } from '../kit/sound.js';
 import { staffMarkup, noteMarkup, homeMarkup, burst } from '../kit/staff.js';
 import { nextNote } from '../kit/logic.js';
 import { $, radioGroup, memory, hasKeyboard, stickers, replay } from '../kit/ui.js';
+import { enableOffline } from '../kit/offline.js';
 
 const ROUNDS = 10;
 
@@ -219,3 +220,4 @@ radioGroup($('#lettersSeg'), v => {
 $('#staff').innerHTML = staffMarkup();
 showMode();
 newGame();
+enableOffline();

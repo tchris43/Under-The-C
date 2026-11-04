@@ -16,6 +16,12 @@ Every game offers Left hand, Right hand and Both hands practice.
 - No outside scripts, fonts or libraries. Every page tells the browser to load nothing from any other site.
 - Progress (last hand chosen) stays only in that device's browser.
 
+## Offline home-screen app
+
+After one visit, the games work with no internet. On an iPad: Share → **Add to Home Screen**. When a new
+version is deployed, the app downloads it in the background and shows **New games are ready!** with an
+Update button; it never reloads in the middle of a round.
+
 ## Run it locally
 
 ```bash

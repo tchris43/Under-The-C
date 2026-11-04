@@ -8,6 +8,7 @@ import { NOTES, HANDS, MIDDLE_C, yOf } from '../kit/notes.js';
 import { charSVG, clownfish } from '../kit/characters.js';
 import { Sound } from '../kit/sound.js';
 import { $, radioGroup, memory, hasKeyboard, reducedMotion, replay } from '../kit/ui.js';
+import { enableOffline } from '../kit/offline.js';
 
 const INK = '#2A2238';
 const WATER = 336; // sea surface: just under Charlie Cat's middle-C line
@@ -352,3 +353,4 @@ setSection(state.section);
 new ResizeObserver(() => {
   if (layoutFor($('#scene').clientWidth, visible().length).W !== state.layout.W) buildScene();
 }).observe($('#scene'));
+enableOffline();

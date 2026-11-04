@@ -12,6 +12,7 @@ import { Sound } from '../kit/sound.js';
 import { staffMarkup, noteMarkup, homeMarkup, burst } from '../kit/staff.js';
 import { nextNote, nextPair, animalChoices, pick } from '../kit/logic.js';
 import { $, radioGroup, memory, hasKeyboard, reducedMotion, stickers } from '../kit/ui.js';
+import { enableOffline } from '../kit/offline.js';
 
 const ROUNDS = 10;
 const CHOICES = 3;
@@ -304,3 +305,4 @@ radioGroup($('#handSeg'), v => { state.hand = /** @type {Hand} */ (v); memory.se
 /* ---------- Start ---------- */
 staff.innerHTML = staffMarkup();
 newGame();
+enableOffline();

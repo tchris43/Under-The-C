@@ -14,3 +14,7 @@
   padding: 6px 10px; border-radius: 999px; background: var(--surface); border: 2px solid var(--line) }
 .game .name { font: 800 28px/1.05 var(--font-display) }
 .game .line { font-weight: 700; font-size: 16px; line-height: 1.4; color: var(--ink-soft) }
+
+.install { display: flex; align-items: center; gap: 14px; padding: 14px 18px; border: 3px dashed var(--ink-soft); border-radius: 20px; color: var(--ink) }
+.install svg { width: 30px; height: 30px; flex: none }
+.install p { margin: 0; font-weight: 600; font-size: 16px; line-height: 1.45 }
