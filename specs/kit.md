@@ -31,3 +31,4 @@ What every game relies on. Tests: `tests/unit/notes.test.js`, `tests/unit/logic.
 20. Each deploy stamps a new version. The app checks for updates when opened or switched back to, downloads
     them in the background, then shows "New games are ready!" with an Update button. It never reloads by itself.
 21. The first visit shows no update note.
+22. Adding `?seed=<number>` to a game link deals the same notes every time (a shared practice set; also keeps tests exact).

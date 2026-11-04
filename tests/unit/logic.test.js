@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { NOTES, HANDS, intervalKind } from '../../site/kit/notes.js';
-import { pick, shuffle, nextNote, nextPair, animalChoices } from '../../site/kit/logic.js';
+import { pick, shuffle, nextNote, nextPair, animalChoices, seededRandom } from '../../site/kit/logic.js';
 import { charSVG } from '../../site/kit/characters.js';
 
 /** Repeatable "random" numbers for tests. */
@@ -72,4 +72,12 @@ test('animalChoices includes a next-door neighbour as the tricky option when one
 test('every friend has a drawing', () => {
   for (const n of NOTES) assert.match(charSVG(n.id), /<(path|circle|ellipse)/, n.id);
   assert.equal(charSVG('nobody'), '');
+});
+
+test('the same seed always deals the same notes', () => {
+  const deal = seed => { const r = seededRandom(seed); let last = -1; return Array.from({ length: 10 }, () => (last = nextNote(HANDS.both, last, r))); };
+  assert.deepEqual(deal(12), deal(12));
+  assert.notDeepEqual(deal(12), deal(13));
+  const r = seededRandom(5);
+  for (let i = 0; i < 1000; i++) { const x = r(); assert.ok(x >= 0 && x < 1); }
 });

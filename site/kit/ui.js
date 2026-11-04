@@ -1,6 +1,7 @@
 // @ts-check
 /** Small DOM helpers shared by the games. */
 import { charSVG } from './characters.js';
+import { seededRandom } from './logic.js';
 
 /**
  * querySelector that fails loudly, so a missing element is caught by the tests instead of breaking silently.
@@ -32,6 +33,12 @@ export const memory = {
   /** @param {string} key  @param {string} value */
   set(key, value) { try { localStorage.setItem(`under-the-c:${key}`, value); } catch { /* storage blocked: fine */ } },
 };
+
+/** Random numbers for dealing notes: repeatable when the link has ?seed=<number>, otherwise truly random. */
+export function randomFromLink() {
+  const seed = Number(new URLSearchParams(location.search).get('seed'));
+  return Number.isInteger(seed) && seed > 0 ? seededRandom(seed) : Math.random;
+}
 
 export const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches;
 

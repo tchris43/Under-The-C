@@ -4,6 +4,13 @@ import pytest
 from helpers import PAGES, clean
 
 
+@pytest.fixture(autouse=True)
+def _chromium_only(browser_setup):
+    browser, _ = browser_setup
+    if browser.browser_type.name == "webkit":
+        pytest.skip("Playwright's Linux WebKit build can't run service workers; check offline play on a real iPad")
+
+
 def test_games_work_offline_after_one_visit(page, base_url, browser_setup):
     page.goto(base_url)
     if not page.evaluate("'serviceWorker' in navigator"):

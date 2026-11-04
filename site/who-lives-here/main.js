@@ -11,11 +11,12 @@ import { charSVG } from '../kit/characters.js';
 import { Sound } from '../kit/sound.js';
 import { staffMarkup, noteMarkup, homeMarkup, burst } from '../kit/staff.js';
 import { nextNote, nextPair, animalChoices, pick } from '../kit/logic.js';
-import { $, radioGroup, memory, hasKeyboard, reducedMotion, stickers } from '../kit/ui.js';
+import { $, radioGroup, memory, hasKeyboard, reducedMotion, stickers, randomFromLink } from '../kit/ui.js';
 import { enableOffline } from '../kit/offline.js';
 
 const ROUNDS = 10;
 const CHOICES = 3;
+const rand = randomFromLink();
 const PRAISE = ['Yes!', 'You got it!', 'Great job!', 'Hooray!', 'That’s right!'];
 
 /** @typedef {'left' | 'right' | 'both'} Hand */
@@ -79,10 +80,10 @@ function newGame() {
 
 function nextRound() {
   if (state.level === 1) {
-    state.notes = [nextNote(pool(), state.last)];
+    state.notes = [nextNote(pool(), state.last, rand)];
     state.last = state.notes[0];
   } else {
-    state.notes = nextPair(pool(), state.lastPair);
+    state.notes = nextPair(pool(), state.lastPair, rand);
     state.lastPair = state.notes.join();
   }
   state.idx = 0; state.phase = 'id'; state.misses = 0;
@@ -108,7 +109,7 @@ function markCurrent() {
 function askAnimal() {
   state.tries = 0; state.locked = false; state.phase = 'id';
   const target = state.notes[state.idx];
-  const options = animalChoices(target, pool(), CHOICES);
+  const options = animalChoices(target, pool(), CHOICES, rand);
   say(state.level === 1 ? 'Who lives here?' : state.idx === 0 ? 'Who lives on the first note?' : 'Who lives on the second note?');
   markCurrent();
   const ch = $('#choices');
