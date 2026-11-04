@@ -23,3 +23,12 @@ What every game relies on. Tests: `tests/unit/notes.test.js`, `tests/unit/logic.
 14. Every page fits a phone without sideways scrolling.
 15. Buttons are at least 36px tall.
 16. The home page links to every game, and every game links back home.
+
+## Offline app (sw.js, kit/offline.js, manifest.webmanifest)
+17. After one visit, every page opens and plays with no internet (tests/e2e/test_offline.py).
+18. Every file in site/ is saved for offline play; a missing one fails tests/unit/offline.test.js.
+19. The site can be added to an iPad home screen, with its own name and icon; the home page explains how.
+20. Each deploy stamps a new version. The app checks for updates when opened or switched back to, downloads
+    them in the background, then shows "New games are ready!" with an Update button. It never reloads by itself.
+21. The first visit shows no update note.
+22. Adding `?seed=<number>` to a game link deals the same notes every time (a shared practice set; also keeps tests exact).

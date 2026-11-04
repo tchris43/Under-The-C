@@ -42,21 +42,21 @@ def test_a_full_game_ends_with_a_celebration(page, base_url):
 
 def test_piano_keys_mode_needs_the_exact_key(page, base_url):
     page.goto(base_url + "note-flash/")
-    page.click('#modeSeg button[data-v="piano"]')
+    page.click('#modeSeg button[data-v="piano"]')  # remembered on this device for the next loads
     assert page.locator("#pad").is_hidden()
     assert page.locator("#piano .pk").count() == 8
-    for _ in range(40):
+    for seed in range(1, 200):
+        page.goto(base_url + f"note-flash/?seed={seed}")
         t = target(page)
         if LETTER_OF[t] == "C":
             other = 7 if t == 0 else 0
             page.click(f'.pk[data-i="{other}"]')
             assert page.locator("#ask").inner_text() == "Right letter! Find the other C."
             page.click(f'.pk[data-i="{t}"]')
-            assert page.locator(f'.pk[data-i="{t}"]').get_attribute("class").count("ok") == 1
+            assert "ok" in page.locator(f'.pk[data-i="{t}"]').get_attribute("class").split()
             clean(page)
             return
-        page.click('#handSeg button[data-v="left"]')  # deal a new game until a C comes up
-    raise AssertionError("no C came up")
+    raise AssertionError("no seed from 1 to 199 starts on a C")
 
 
 def test_letters_on_the_keys_can_be_hidden(page, base_url):

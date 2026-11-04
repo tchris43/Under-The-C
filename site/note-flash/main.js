@@ -10,9 +10,11 @@ import { charSVG } from '../kit/characters.js';
 import { Sound } from '../kit/sound.js';
 import { staffMarkup, noteMarkup, homeMarkup, burst } from '../kit/staff.js';
 import { nextNote } from '../kit/logic.js';
-import { $, radioGroup, memory, hasKeyboard, stickers, replay } from '../kit/ui.js';
+import { $, radioGroup, memory, hasKeyboard, stickers, replay, randomFromLink } from '../kit/ui.js';
+import { enableOffline } from '../kit/offline.js';
 
 const ROUNDS = 10;
+const rand = randomFromLink();
 
 /** @typedef {'left' | 'right' | 'both'} Hand */
 /** @typedef {'pad' | 'piano'} Mode */
@@ -73,7 +75,7 @@ function newGame() {
 }
 
 function nextCard() {
-  state.target = nextNote(pool(), state.last);
+  state.target = nextNote(pool(), state.last, rand);
   state.last = state.target; state.misses = 0; state.locked = false;
   const n = NOTES[state.target], x = spatialX(n.step);
   $('#noteG').innerHTML = noteMarkup(n.step, x);
@@ -219,3 +221,4 @@ radioGroup($('#lettersSeg'), v => {
 $('#staff').innerHTML = staffMarkup();
 showMode();
 newGame();
+enableOffline();

@@ -69,11 +69,18 @@ def test_level_2_names_both_friends_then_step_or_skip(page, base_url):
 
 
 def test_low_c_has_its_stem_up(page, base_url):
-    page.goto(base_url + "who-lives-here/")
-    for _ in range(40):
-        page.wait_for_selector('#stage[data-phase="id"]')
+    # Seeds make the deal repeatable, so this finds the same low-C game every run.
+    for seed in range(1, 200):
+        page.goto(base_url + f"who-lives-here/?seed={seed}")
         if page.get_attribute("#stage", "data-target") == "0":
             assert page.get_attribute("#note0", "data-stem") == "up"
             return
-        page.click('#handSeg button[data-v="left"]')  # deal a new game until low C comes up
-    raise AssertionError("low C never came up")
+    raise AssertionError("no seed from 1 to 199 starts on low C")
+
+
+def test_a_seed_deals_the_same_game_every_time(page, base_url):
+    firsts = []
+    for _ in range(2):
+        page.goto(base_url + "who-lives-here/?seed=21")
+        firsts.append(page.get_attribute("#stage", "data-target"))
+    assert firsts[0] == firsts[1]
