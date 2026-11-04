@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Under the Sea · Under the C</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../kit/kit.css">
+<link rel="stylesheet" href="style.css">
+<script type="module" src="main.js"></script>
+</head>
+<body>
+<main class="app wide">
+  <header class="top">
+    <div class="brand">
+      <a class="btn home" href="../" aria-label="All games"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Games</a>
+      <svg viewBox="-44 -44 88 88" aria-hidden="true" id="brandIcon"></svg>
+      <div><h1>Under the Sea</h1><p id="tagline">The left-hand friends live under middle C</p></div>
+    </div>
+    <div class="controls">
+      <div class="seg" id="sectionSeg" role="radiogroup" aria-label="Which friends">
+        <button type="button" role="radio" data-v="right" aria-checked="false">Right hand</button>
+        <button type="button" role="radio" data-v="all" aria-checked="false">Everyone</button>
+        <button type="button" role="radio" data-v="sea" aria-checked="true">Under the Sea</button>
+      </div>
+      <button type="button" class="btn" id="paradeBtn">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 17.5a3 3 0 1 1-2-2.83V5.5l12-2.5v11.5a3 3 0 1 1-2-2.83V6.9L9 8.6v8.9z"/></svg>
+        <span>Parade</span>
+      </button>
+    </div>
+  </header>
+
+  <section class="scene" id="scene" aria-label="The staff world. Tap a friend to hear its note.">
+    <svg id="world" role="group" aria-label="Note friends on the staff"></svg>
+    <div class="pill hint" id="hint"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0v4.5a6 6 0 0 1-6 6h-.6a6 6 0 0 1-4.9-2.6L4 15.3a1.5 1.5 0 0 1 2.4-1.8L9 16"/></svg>Tap a friend!</div>
+    <div class="pill sea-tag" id="seaTag">Under the Sea</div>
+  </section>
+
+  <section class="card" id="card" aria-live="polite">
+    <div class="card-avatar"><svg viewBox="-44 -44 88 88" id="cardAvatar" aria-hidden="true"></svg></div>
+    <div class="card-body">
+      <div class="card-head">
+        <span class="letter" id="cardLetter">C</span>
+        <div><h2 id="cardName">Charlie Cat</h2><p class="where" id="cardWhere">Middle C</p></div>
+      </div>
+      <p class="story" id="cardStory"></p>
+    </div>
+    <button type="button" class="btn soft replay" id="replayBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.5-5.8"/><path d="M4 4v4.5h4.5"/></svg>
+      <span>Again</span>
+    </button>
+  </section>
+
+  <section class="piano-wrap" aria-label="Piano">
+    <div class="piano" id="piano"></div>
+    <div class="laptop" id="laptop">
+      <span class="lbl"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="2.5"/><path d="M6 10h1M9.5 10h1M13 10h1M16.5 10h1M7.5 14h9" stroke-linecap="round"/></svg>Laptop keys</span>
+      <div class="seg" id="modeSeg" role="radiogroup" aria-label="Laptop key mode">
+        <button type="button" role="radio" data-v="piano" aria-checked="true">Piano row</button>
+        <button type="button" role="radio" data-v="letters" aria-checked="false">Note letters</button>
+      </div>
+      <p class="tip" id="kbTip"></p>
+    </div>
+  </section>
+</main>
+</body>
+</html>

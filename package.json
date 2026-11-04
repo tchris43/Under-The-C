@@ -1,0 +1,13 @@
+{
+  "name": "under-the-c",
+  "private": true,
+  "description": "Piano note-reading games for kids. Static site, no runtime dependencies.",
+  "type": "module",
+  "scripts": {
+    "serve": "python3 -m http.server 4173 -d site",
+    "test:unit": "node --test tests/unit/*.test.js",
+    "test:e2e": "python3 -m pytest tests/e2e -q",
+    "check": "./scripts/check-fast.sh && python3 -m pytest tests/e2e -q",
+    "check:fast": "./scripts/check-fast.sh"
+  }
+}

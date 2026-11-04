@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Note Flash · Under the C</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../kit/kit.css">
+<link rel="stylesheet" href="style.css">
+<script type="module" src="main.js"></script>
+</head>
+<body>
+<main class="app">
+  <header class="top">
+    <div class="brand">
+      <a class="btn home" href="../" aria-label="All games"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Games</a>
+      <div><h1>Note Flash</h1><p id="tagline">Level 3 · Tap the letter of the note</p></div>
+    </div>
+    <div class="controls">
+      <div class="seg" id="modeSeg" role="radiogroup" aria-label="How to answer">
+        <button type="button" role="radio" data-v="pad" aria-checked="true">Letter Pad</button>
+        <button type="button" role="radio" data-v="piano" aria-checked="false">Piano Keys</button>
+      </div>
+      <div class="seg" id="handSeg" role="radiogroup" aria-label="Which hand">
+        <button type="button" role="radio" data-v="left" aria-checked="true">Left hand</button>
+        <button type="button" role="radio" data-v="right" aria-checked="false">Right hand</button>
+        <button type="button" role="radio" data-v="both" aria-checked="false">Both hands</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="progress" aria-label="Progress">
+    <span class="count" id="count">1 / 10</span>
+    <div class="slots" id="slots"></div>
+  </div>
+
+  <section class="stage" id="stage">
+    <div class="sheet">
+      <svg class="staff" id="staff" viewBox="0 80 600 470" role="img" aria-label="A note on the staff"></svg>
+      <div class="ask" id="ask" aria-live="polite">What note is this?</div>
+      <button type="button" class="btn hear" id="hearBtn" aria-label="Hear the note"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 17.5a3 3 0 1 1-2-2.83V5.5l12-2.5v11.5a3 3 0 1 1-2-2.83V6.9L9 8.6v8.9z"/></svg><span>Hear it</span></button>
+    </div>
+    <div class="finish" id="finish" hidden>
+      <h2>You did it!</h2>
+      <div class="row" id="finishRow"></div>
+      <p id="finishMsg"></p>
+      <button type="button" class="btn" id="againBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.5-5.8"/><path d="M4 4v4.5h4.5"/></svg>Play again</button>
+    </div>
+  </section>
+
+  <section class="answer-area" id="answerArea" aria-label="Answer">
+    <div class="pad" id="pad"></div>
+    <div class="piano-wrap" id="pianoWrap" hidden>
+      <div class="piano" id="piano"></div>
+      <div class="piano-foot">
+        <p class="tip">Find the exact key. Middle C has the blue stripe.</p>
+        <div class="seg" id="lettersSeg" role="radiogroup" aria-label="Letters on the keys">
+          <button type="button" role="radio" data-v="on" aria-checked="true">Letters on keys</button>
+          <button type="button" role="radio" data-v="off" aria-checked="false">No letters</button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <p class="kbtip" id="kbtip">Laptop: type the letter <kbd>A</kbd>–<kbd>G</kbd>.</p>
+</main>
+</body>
+</html>

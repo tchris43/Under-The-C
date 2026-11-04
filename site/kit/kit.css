@@ -1,0 +1,115 @@
+/* Note Friends kit styles: colour tokens (light + dark), chunky toy buttons, segmented controls,
+   sticker row, sheet music card, finish panel. Every game page loads this first. */
+:root {
+  color-scheme: light;
+  --paper:#EAF2F7; --surface:#FFFFFF; --ink:#27213D; --ink-soft:#5A5472; --line:#27213D;
+  --accent:#FFB934; --on-accent:#2A1E05; --focus:#2F6FD6; --good:#4FB06A; --slot:#D9E3EC;
+  --sheet:#FFFDF6; --sheet-ink:#27213D; --sheet-soft:#5E5876;
+  --key-white:#FFFFFF; --key-edge:#C5CFDA; --key-black:#27213D;
+  --font-display: ui-rounded, "SF Pro Rounded", "Arial Rounded MT Bold", "Nunito", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body: ui-rounded, "SF Pro Rounded", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --paper:#111728; --surface:#1B2340; --ink:#EEF0FA; --ink-soft:#B3B8D4; --line:#0A0D18;
+    --accent:#FFC24D; --on-accent:#2A1E05; --focus:#8DB6FF; --good:#5CC27A; --slot:#2C365A;
+    --sheet:#EFEADF; --sheet-ink:#27213D; --sheet-soft:#5E5876;
+    --key-white:#ECEEF5; --key-edge:#8C93AE; --key-black:#0B0E18;
+  }
+}
+
+* { box-sizing: border-box }
+[hidden] { display: none !important }
+html, body { margin: 0; min-height: 100% }
+body { background: var(--paper); color: var(--ink); font-family: var(--font-body); font-size: 16px; -webkit-tap-highlight-color: transparent;
+  padding: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px) }
+.app { max-width: 920px; margin: 0 auto; padding: 18px 16px 32px; display: flex; flex-direction: column; gap: 16px }
+.app.wide { max-width: 1080px }
+
+/* Header */
+.top { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap }
+.brand { display: flex; align-items: center; gap: 12px; min-width: 0 }
+.brand svg { width: 52px; height: 52px; flex: none }
+.brand h1 { font: 800 clamp(26px, 4.2vw, 38px)/1.05 var(--font-display); margin: 0 }
+.brand p { margin: 4px 0 0; color: var(--ink-soft); font-weight: 700; font-size: 15px }
+.controls { display: flex; gap: 10px; flex-wrap: wrap; align-items: center }
+
+/* Chunky toy buttons */
+.btn { font: 800 16px/1 var(--font-body); display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 48px; padding: 0 18px;
+  border-radius: 16px; cursor: pointer; user-select: none; -webkit-user-select: none; border: 3px solid var(--line); background: var(--accent); color: var(--on-accent);
+  box-shadow: 0 5px 0 var(--line); transition: transform .06s, box-shadow .06s; touch-action: manipulation; text-decoration: none }
+.btn svg { width: 22px; height: 22px; flex: none }
+.btn:active { transform: translateY(4px); box-shadow: 0 1px 0 var(--line) }
+.btn.soft { background: var(--surface); color: var(--ink) }
+.btn:disabled { opacity: .55; cursor: default }
+.btn.home { min-height: 44px; padding: 0 14px 0 10px; background: var(--surface); color: var(--ink) }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px }
+
+/* Segmented controls */
+.seg { display: inline-flex; border: 3px solid var(--line); border-radius: 14px; overflow: hidden; box-shadow: 0 4px 0 var(--line) }
+.seg button { font: 800 15px/1 var(--font-body); padding: 0 14px; min-height: 44px; border: 0; background: var(--surface); color: var(--ink-soft); cursor: pointer; touch-action: manipulation }
+.seg button + button { border-left: 3px solid var(--line) }
+.seg button[aria-checked="true"] { background: var(--accent); color: var(--on-accent) }
+
+/* Sticker row */
+.progress { display: flex; align-items: center; gap: 12px }
+.progress .count { font: 800 18px/1 var(--font-display); color: var(--ink-soft); white-space: nowrap; font-variant-numeric: tabular-nums }
+.slots { display: grid; grid-template-columns: repeat(10, 1fr); gap: 6px; flex: 1; min-width: 0 }
+.slot { aspect-ratio: 1; border-radius: 50%; background: var(--slot); display: grid; place-items: center; position: relative; max-width: 52px }
+.slot.now { box-shadow: 0 0 0 3px var(--accent) }
+.slot svg { width: 92%; height: 92%; overflow: visible }
+.slot.pair svg { width: 62%; height: 62%; position: absolute }
+.slot.pair svg:first-child { left: -2%; top: 28% }
+.slot.pair svg:nth-child(2) { right: -2%; top: 6% }
+.slot.filled { background: color-mix(in srgb, var(--c) 30%, var(--surface)); animation: stick .4s cubic-bezier(.3,1.6,.5,1) }
+.slot .star { position: absolute; right: -4px !important; top: -4px !important; left: auto !important; width: 42% !important; height: 42% !important }
+
+/* Sheet music card */
+.stage { position: relative }
+.sheet { position: relative; background: var(--sheet); border: 3px solid var(--line); border-radius: 24px; box-shadow: 0 6px 0 var(--line); overflow: hidden }
+.staff { display: block; width: 100%; height: auto; user-select: none; -webkit-user-select: none }
+.ask { position: absolute; left: 16px; top: 14px; right: 150px; font: 800 clamp(18px, 2.6vw, 24px)/1.1 var(--font-display); color: var(--sheet-ink) }
+.hear.btn { position: absolute; right: 14px; top: 12px; min-height: 44px; padding: 0 14px; background: #FFFFFF; color: #27213D; border-color: #27213D; box-shadow: 0 4px 0 #27213D }
+.note-g, .ghost { transition: opacity .3s }
+.cur-ring { fill: none; stroke: var(--accent); stroke-width: 5; transform-box: fill-box; transform-origin: 50% 50%; animation: pulse 1.2s ease-in-out infinite }
+.pop { transform-box: fill-box; transform-origin: 50% 50%; animation: popin .45s cubic-bezier(.3,1.6,.5,1) }
+.spark { animation: spark .7s ease-out forwards; transform-box: fill-box; transform-origin: 50% 50% }
+.arc { stroke-dasharray: 400; stroke-dashoffset: 400; animation: draw .6s ease-out forwards }
+
+/* Finish panel */
+.finish { position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px;
+  background: color-mix(in srgb, var(--sheet) 96%, transparent); border-radius: 21px; text-align: center; padding: 16px; color: var(--sheet-ink) }
+.finish[hidden] { display: none }
+.finish h2 { margin: 0; font: 800 clamp(30px, 5vw, 48px)/1 var(--font-display) }
+.finish p { margin: 0; font-weight: 800; font-size: 18px; color: var(--sheet-soft) }
+.finish .row { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px; max-width: 600px }
+.finish .row svg { width: clamp(36px, 6vw, 54px); height: clamp(36px, 6vw, 54px); overflow: visible; animation: stick .4s cubic-bezier(.3,1.6,.5,1) both }
+
+.kbtip { margin: 0; text-align: center; color: var(--ink-soft); font-weight: 700; font-size: 14px }
+.kbtip kbd { font: 800 12px/1 var(--font-body); border: 1.5px solid var(--ink-soft); border-bottom-width: 3px; border-radius: 6px; padding: 2px 5px; color: var(--ink) }
+body:not(.kb) .kbtip { display: none }
+
+@keyframes stick { 0% { transform: scale(.3) } 100% { transform: scale(1) } }
+@keyframes pulse { 0%, 100% { transform: scale(1); opacity: .9 } 50% { transform: scale(1.15); opacity: .45 } }
+@keyframes popin { 0% { transform: scale(.2); opacity: 0 } 100% { transform: scale(1); opacity: 1 } }
+@keyframes spark { 0% { transform: translate(0,0) scale(.3); opacity: 1 } 100% { transform: translate(var(--dx),var(--dy)) scale(1.1) rotate(60deg); opacity: 0 } }
+@keyframes draw { to { stroke-dashoffset: 0 } }
+@keyframes shake { 0%, 100% { transform: none } 20% { transform: translateX(-8px) rotate(-3deg) } 40% { transform: translateX(7px) rotate(2deg) } 60% { transform: translateX(-5px) } 80% { transform: translateX(3px) } }
+@keyframes yay { 0% { transform: none } 40% { transform: translateY(-10px) scale(1.04) } 100% { transform: none } }
+
+@media (max-width: 640px) {
+  .staff { margin-top: 38px }   /* room for the question above the staff on small screens */
+  .brand > svg { display: none }
+}
+@media (max-width: 560px) {
+  .slots { gap: 4px }
+  .ask { right: 64px }
+  .hear.btn span { display: none }
+  .seg button { padding: 0 10px; font-size: 14px }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important }
+  .spark { display: none }
+  .arc { stroke-dashoffset: 0 }
+}

@@ -1,0 +1,105 @@
+/* Under the Sea: the grand staff as a cross-section of a little world. Land and sky above middle C
+   (right-hand friends), the sea below it (left-hand friends). */
+:root {
+  --sky-top:#A9DBF5; --sky-bot:#E3F4FB; --cloud:#FFFFFF; --sun:#FFD65C; --star:0;
+  --sea-top:#8AD8EF; --sea-bot:#2F86B9; --foam:#FFFFFF; --sand:#F2DCA4;
+  --weed:#3FA56B; --water:#6EC3EA; --leaf:#6DBB5A; --trunk:#8B5A34;
+  --raincloud:#B8C4D2; --rain:#4F9FD8; --staff:#2B2542;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --sky-top:#172448; --sky-bot:#34497A; --cloud:#50638F; --sun:#F4EFD2; --star:1;
+    --sea-top:#1F5E86; --sea-bot:#0B2742; --foam:#9FD3F0; --sand:#8C7448;
+    --weed:#2B7A4E; --water:#3F8FBF; --leaf:#3F8A4A; --trunk:#5B3B22;
+    --raincloud:#6A7896; --rain:#7FB8E8; --staff:#E9ECF8;
+  }
+}
+/* Scene */
+.scene { position:relative; border:3px solid var(--line); border-radius:28px; overflow:hidden; box-shadow:0 6px 0 var(--line); background:var(--sky-bot) }
+.scene svg { display:block; width:100%; height:auto; touch-action:manipulation; user-select:none; -webkit-user-select:none }
+.pill { position:absolute; display:flex; align-items:center; gap:8px; background:var(--surface); color:var(--ink); border:3px solid var(--line);
+  border-radius:999px; padding:6px 14px 6px 10px; font-weight:800; font-size:15px; box-shadow:0 3px 0 var(--line); pointer-events:none }
+.pill svg { width:22px; height:22px }
+.hint { left:14px; top:14px; transition:opacity .3s, transform .3s }
+.hint.gone { opacity:0; transform:translateY(-8px) }
+.sea-tag { right:14px; bottom:12px; font:800 16px/1 var(--font-display); padding:7px 14px 5px }
+
+.char { cursor:pointer; outline:none }
+.char .bob { animation:bob 3.2s ease-in-out infinite; animation-delay:var(--d); transform-box:fill-box; transform-origin:50% 50% }
+.char .hop { transform-box:fill-box; transform-origin:50% 100% }
+.char .hop.go { animation:hop .5s cubic-bezier(.3,.7,.4,1) }
+.char .ring { opacity:0; transition:opacity .2s }
+.char.sel .ring { opacity:.32 }
+.char:focus-visible .focus-ring { opacity:1 }
+.char .focus-ring { opacity:0; fill:none; stroke:var(--focus); stroke-width:4; stroke-dasharray:6 5 }
+.home { transition:opacity .25s }
+.spark { animation:spark .7s ease-out forwards; transform-box:fill-box; transform-origin:50% 50% }
+.stars { opacity:var(--star) }
+.bubble { fill:none; stroke:var(--foam); stroke-width:2; opacity:0; animation:rise var(--t) linear infinite; animation-delay:var(--dl) }
+.weed { transform-box:fill-box; transform-origin:50% 100%; animation:sway 3.6s ease-in-out infinite alternate; animation-delay:var(--dl) }
+@keyframes bob { 0%,100% { transform:translateY(0) } 50% { transform:translateY(-3px) } }
+@keyframes hop { 0% { transform:none } 18% { transform:scale(1.16,.84) } 50% { transform:translateY(-18px) scale(.92,1.1) } 80% { transform:scale(1.07,.94) } 100% { transform:none } }
+@keyframes spark { 0% { transform:translate(0,0) scale(.3); opacity:1 } 100% { transform:translate(var(--dx),var(--dy)) scale(1.1) rotate(60deg); opacity:0 } }
+@keyframes rise { 0% { transform:translateY(0); opacity:0 } 12% { opacity:.75 } 85% { opacity:.55 } 100% { transform:translateY(-190px); opacity:0 } }
+@keyframes sway { from { transform:rotate(-6deg) } to { transform:rotate(6deg) } }
+
+/* Story card */
+.card { --c:#4C8FE0; display:grid; grid-template-columns:auto 1fr auto; align-items:center; gap:18px;
+  background:var(--surface); border:3px solid var(--line); border-radius:24px; padding:14px 18px; box-shadow:0 5px 0 var(--line) }
+.card-avatar { width:104px; height:104px; border-radius:50%; flex:none; display:grid; place-items:center;
+  background:color-mix(in srgb, var(--c) 22%, var(--surface)); border:3px solid var(--line) }
+.card-avatar svg { width:92px; height:92px; overflow:visible }
+.card-body { min-width:0; display:flex; flex-direction:column; gap:6px }
+.card-head { display:flex; align-items:center; gap:12px }
+.card-head > div { min-width:0 }
+.letter { width:52px; height:52px; border-radius:50%; display:grid; place-items:center; flex:none;
+  background:var(--c); color:var(--on-c,#27213D); border:3px solid var(--line); font:800 30px/1 var(--font-display); padding-top:3px }
+.card h2 { margin:0; font:800 clamp(24px,3.2vw,32px)/1.05 var(--font-display) }
+.where { margin:2px 0 0; font-weight:800; font-size:13px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft) }
+.story { margin:0; font-weight:700; font-size:18px; line-height:1.45; max-width:62ch; text-wrap:pretty }
+.card.pop { animation:pop .35s ease-out }
+@keyframes pop { 0% { transform:scale(.98) } 60% { transform:scale(1.01) } 100% { transform:none } }
+
+/* Piano */
+.piano-wrap { background:var(--surface); border:3px solid var(--line); border-radius:24px; padding:14px 14px 16px; box-shadow:0 5px 0 var(--line); display:flex; flex-direction:column; gap:12px }
+.piano { position:relative; display:flex; height:clamp(130px,20vw,196px); touch-action:none; user-select:none; -webkit-user-select:none }
+.key { border:0; padding:0; font:inherit; cursor:pointer; -webkit-tap-highlight-color:transparent }
+.wkey { --c:#ccc; flex:1; min-width:0; position:relative; background:var(--key-white); color:var(--key-ink);
+  border:2.5px solid var(--line); border-radius:0 0 14px 14px; margin-right:-2.5px;
+  display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:6px; padding-bottom:10px;
+  box-shadow:inset 0 -8px 0 var(--key-edge); transition:background .05s }
+.wkey:last-child { margin-right:0 }
+.wkey.down, .wkey.lit { background:color-mix(in srgb, var(--c) 45%, var(--key-white)); box-shadow:inset 0 -3px 0 var(--key-edge) }
+.wkey.midc { box-shadow:inset 0 -8px 0 var(--key-edge), inset 0 4px 0 #4C8FE0 }
+.wkey .dot { width:clamp(12px,2.2vw,22px); aspect-ratio:1; border-radius:50%; background:var(--c); border:2px solid #27213D }
+.wkey .nl { font:800 clamp(15px,2.3vw,22px)/1 var(--font-display) }
+.wkey .cap, .bkey .cap { display:none; font:800 12px/1 var(--font-body); padding:4px 6px; border-radius:6px;
+  border:1.5px solid currentColor; opacity:.6; position:absolute; top:10px; left:50%; transform:translateX(-50%) }
+.bkey { position:absolute; top:0; height:60%; background:var(--key-black); color:#EEF0FA;
+  border:2.5px solid var(--line); border-radius:0 0 10px 10px; z-index:2; transform:translateX(-50%); box-shadow:inset 0 -7px 0 rgba(255,255,255,.12) }
+.bkey.down { background:#4A4366 }
+body.kb.mode-piano .cap { display:block }
+
+.laptop { display:none; align-items:center; gap:12px; flex-wrap:wrap }
+body.kb .laptop { display:flex }
+.laptop .lbl { display:flex; align-items:center; gap:8px; font-weight:800; font-size:14px; color:var(--ink-soft); letter-spacing:.05em; text-transform:uppercase }
+.laptop .lbl svg { width:22px; height:22px }
+#laptop .seg { box-shadow:none; border-width:2.5px; border-radius:12px }
+#laptop .seg button { min-height:36px; font-size:14px }
+.laptop .tip { margin:0; font-weight:700; font-size:14px; color:var(--ink-soft); min-width:0 }
+kbd { font:800 12px/1 var(--font-body); border:1.5px solid var(--ink-soft); border-bottom-width:3px; border-radius:6px; padding:2px 5px; color:var(--ink) }
+
+@media (max-width:640px) {
+  .card { grid-template-columns:auto 1fr; gap:12px; padding:12px 14px }
+  .card-avatar { width:76px; height:76px } .card-avatar svg { width:66px; height:66px }
+  .card .replay { grid-column:1 / -1; justify-self:start }
+  .letter { width:42px; height:42px; font-size:24px }
+  .story { font-size:16px }
+  .wkey .cap, .bkey .cap { font-size:10px; padding:3px 4px }
+  .sea-tag { display:none }
+  .hint { font-size:13px; top:8px; left:8px; padding:4px 10px 4px 8px }
+}
+@media (prefers-reduced-motion: reduce) {
+  .char .bob, .char .hop.go, .spark, .card.pop, .bubble, .weed { animation:none !important }
+  .spark, .bubble { display:none }
+}
