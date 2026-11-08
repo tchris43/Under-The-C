@@ -4,7 +4,8 @@
  * visit and can be added to an iPad's home screen as an app. Does nothing where it isn't supported.
  *
  * Updates: each time the app is opened or switched back to, it checks for a new version. A new version
- * downloads in the background; then a small note offers an Update button. It never reloads by itself,
+ * downloads in the background; then a small note offers an Update button (in a game's header, never over
+ * an answer). It never reloads by itself,
  * so a kid in the middle of a round never loses it.
  */
 export function enableOffline() {
@@ -38,5 +39,9 @@ function showUpdateNote() {
   note.setAttribute('role', 'status');
   note.innerHTML = '<span>New games are ready!</span><button type="button" class="btn">Update</button>';
   note.querySelector('button')?.addEventListener('click', () => location.reload());
-  document.body.appendChild(note);
+  // In a game it sits in the header, next to the settings button, so it never covers an answer.
+  // The home page has no answers, so there it floats at the bottom.
+  const header = document.querySelector('.top');
+  if (header) { note.classList.add('in-header'); header.insertBefore(note, document.getElementById('settingsBtn')); }
+  else document.body.appendChild(note);
 }

@@ -5,13 +5,15 @@
  * Level 2: two notes. Name both friends, then decide: step or skip?
  *   step = next-door neighbours (line to space), skip = jump over one (line to line, space to space).
  * Ten rounds a game; a sticker for each, with a gold star when it was right first try.
+ * The shared setup screen (kit/setup.js) comes first: friends and level.
  */
-import { NOTES, HANDS, yOf, spatialX, intervalKind } from '../kit/notes.js';
+import { NOTES, yOf, spatialX, intervalKind } from '../kit/notes.js';
 import { charSVG } from '../kit/characters.js';
 import { Sound } from '../kit/sound.js';
 import { staffMarkup, noteMarkup, homeMarkup, burst } from '../kit/staff.js';
 import { nextNote, nextPair, animalChoices, pick } from '../kit/logic.js';
-import { $, radioGroup, memory, hasKeyboard, reducedMotion, stickers, randomFromLink } from '../kit/ui.js';
+import { $, hasKeyboard, reducedMotion, stickers, randomFromLink } from '../kit/ui.js';
+import { setup } from '../kit/setup.js';
 import { enableOffline } from '../kit/offline.js';
 
 const ROUNDS = 10;
@@ -19,10 +21,8 @@ const CHOICES = 3;
 const rand = randomFromLink();
 const PRAISE = ['Yes!', 'You got it!', 'Great job!', 'Hooray!', 'That’s right!'];
 
-/** @typedef {'left' | 'right' | 'both'} Hand */
 const state = {
-  level: Number(memory.get('who-level', '1')) === 2 ? 2 : 1,
-  hand: /** @type {Hand} */ (memory.get('who-hand', 'left')),
+  /** @type {1 | 2} */ level: 1,
   round: 0,
   /** @type {number[]} */ notes: [],
   idx: 0,
@@ -34,15 +34,25 @@ const state = {
   last: -1,
   lastPair: '',
 };
-if (!(state.hand in HANDS)) state.hand = 'left';
 
 const staff = /** @type {SVGSVGElement} */ (/** @type {unknown} */ ($('#staff')));
 const stage = $('#stage');
-const pool = () => HANDS[state.hand];
+const screen = setup({
+  game: 'who',
+  options: ['level'],
+  onPlay: s => { state.level = s.level; newGame(); },
+  // A friend still flying lands on its own note right away, so it never flies across the setup screen
+  // or lands on the next game.
+  onOpen: () => { flights.forEach(land => land()); $('#tagline').textContent = 'Set up practice'; },
+  onResume: () => showTagline(),
+});
+const pool = () => screen.settings.pool;
 const first = (/** @type {{ name: string }} */ n) => n.name.split(' ')[0];
 
 /** @type {number[]} */
 let timers = [];
+/** Friends flying onto the staff right now: calling one lands it at once. @type {(() => void)[]} */
+let flights = [];
 const later = (/** @type {() => void} */ fn, /** @type {number} */ ms) => { timers.push(window.setTimeout(fn, ms)); };
 const clearTimers = () => { timers.forEach(clearTimeout); timers = []; };
 const say = (/** @type {string} */ text) => { $('#ask').textContent = text; };
@@ -68,12 +78,16 @@ function syncStage() {
   stage.dataset.answer = state.notes.length === 2 ? String(intervalKind(state.notes[0], state.notes[1])) : '';
 }
 
+function showTagline() {
+  $('#tagline').textContent = state.level === 1 ? 'Find the friend who lives on the note' : 'Name both friends, then: step or skip?';
+}
+
 /* ---------- Rounds ---------- */
 function newGame() {
   clearTimers();
   state.round = 0; state.results = []; state.last = -1; state.lastPair = '';
   $('#finish').hidden = true;
-  $('#tagline').textContent = state.level === 1 ? 'Find the friend who lives on the note' : 'Name both friends, then: step or skip?';
+  showTagline();
   stickers.build($('#slots'), ROUNDS);
   nextRound();
 }
@@ -248,11 +262,14 @@ function fly(/** @type {HTMLElement} */ fromEl, /** @type {{ id: string, step: n
   document.body.appendChild(f);
   const sx = r.left, sy = r.top, ex = p.x - r.width / 2, ey = p.y - r.height / 2, s = endSize / r.width;
   const midY = Math.min(sy, ey) - 60;
-  f.animate([
+  const flight = f.animate([
     { transform: `translate(${sx}px, ${sy}px) scale(1)` },
     { transform: `translate(${(sx + ex) / 2}px, ${midY}px) scale(${(1 + s) / 2}) rotate(-8deg)`, offset: .5 },
     { transform: `translate(${ex}px, ${ey}px) scale(${s})` },
-  ], { duration: 560, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' }).onfinish = () => { f.remove(); done(); };
+  ], { duration: 560, easing: 'cubic-bezier(.4,0,.2,1)', fill: 'forwards' });
+  const land = () => { flight.onfinish = null; flight.cancel(); flights = flights.filter(l => l !== land); f.remove(); done(); };
+  flights.push(land);
+  flight.onfinish = land;
 }
 
 function finish() {
@@ -286,6 +303,7 @@ $('#choices').addEventListener('click', e => { // Enter or Space on a focused ca
 if (hasKeyboard()) document.body.classList.add('kb');
 document.addEventListener('keydown', e => {
   if (e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
+  if (!$('#setup').hidden) return; // keys on the setup screen never answer
   const k = e.key.toLowerCase();
   if (['1', '2', '3'].includes(k)) {
     document.body.classList.add('kb');
@@ -300,10 +318,9 @@ function hear() {
 $('#hearBtn').addEventListener('click', hear);
 $('#againBtn').addEventListener('click', newGame);
 
-radioGroup($('#levelSeg'), v => { state.level = v === '2' ? 2 : 1; memory.set('who-level', v); newGame(); }, String(state.level));
-radioGroup($('#handSeg'), v => { state.hand = /** @type {Hand} */ (v); memory.set('who-hand', v); newGame(); }, state.hand);
+$('#changeBtn').addEventListener('click', screen.open);
 
-/* ---------- Start ---------- */
+/* ---------- Start: the shared setup screen comes first, with this device's last choices ---------- */
 staff.innerHTML = staffMarkup();
-newGame();
+screen.open();
 enableOffline();
