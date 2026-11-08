@@ -4,31 +4,36 @@
  * Letter Pad: tap the letter. Piano Keys: find the exact key (the right C, not just any C).
  * When the answer is right, the friend who lives there pops onto the note as the reward.
  * After two misses, a faint friend appears on the note as a hint.
+ * The shared setup screen (kit/setup.js) comes first: friends, how to answer, letters on keys.
  */
-import { NOTES, HANDS, LETTERS, yOf, spatialX } from '../kit/notes.js';
+import { NOTES, LETTERS, yOf, spatialX } from '../kit/notes.js';
 import { charSVG } from '../kit/characters.js';
 import { Sound } from '../kit/sound.js';
 import { staffMarkup, noteMarkup, homeMarkup, burst } from '../kit/staff.js';
 import { nextNote } from '../kit/logic.js';
-import { $, radioGroup, memory, hasKeyboard, stickers, replay, randomFromLink } from '../kit/ui.js';
+import { $, hasKeyboard, stickers, replay, randomFromLink } from '../kit/ui.js';
+import { setup } from '../kit/setup.js';
+import { pianoKeys } from '../kit/settings.js';
 import { enableOffline } from '../kit/offline.js';
 
 const ROUNDS = 10;
 const rand = randomFromLink();
 
-/** @typedef {'left' | 'right' | 'both'} Hand */
-/** @typedef {'pad' | 'piano'} Mode */
 const state = {
-  mode: /** @type {Mode} */ (memory.get('flash-mode', 'pad') === 'piano' ? 'piano' : 'pad'),
-  hand: /** @type {Hand} */ (memory.get('flash-hand', 'left')),
-  letters: memory.get('flash-letters', 'on') !== 'off',
-  round: 0, target: -1, last: -1, misses: 0, locked: false,
+  round: 0, target: -1, last: -1, misses: 0, locked: true,
   /** @type {{ i: number, first: boolean }[]} */ results: [],
 };
-if (!(state.hand in HANDS)) state.hand = 'left';
 
 const stage = $('#stage');
-const pool = () => HANDS[state.hand];
+const screen = setup({
+  game: 'flash',
+  options: ['mode', 'letters'],
+  onPlay: () => { showMode(); newGame(); },
+  onOpen: () => { $('#tagline').textContent = 'Level 3 · Set up practice'; },
+  onResume: showMode,
+});
+const settings = screen.settings;
+const pool = () => settings.pool;
 /** @type {number[]} */
 let timers = [];
 const later = (/** @type {() => void} */ fn, /** @type {number} */ ms) => { timers.push(window.setTimeout(fn, ms)); };
@@ -39,7 +44,7 @@ const say = (/** @type {string} */ text) => { $('#ask').textContent = text; };
 $('#pad').innerHTML = LETTERS.map(l => `<button type="button" class="lk" data-l="${l}" aria-label="${l}">${l}</button>`).join('');
 
 function buildPiano() {
-  const vis = pool(), n = vis.length;
+  const vis = pianoKeys(pool()), n = vis.length;
   let blacks = '';
   for (let k = 0; k < n - 1; k++) {
     const m = NOTES[vis[k]].midi;
@@ -52,14 +57,14 @@ function buildPiano() {
     const nt = NOTES[i];
     return `<button type="button" class="pk${nt.step === 0 ? ' midc' : ''}" data-i="${i}" style="--c:${nt.color}" aria-label="${nt.letter} key${nt.step === 0 ? ', middle C' : ''}"><span class="nl">${nt.letter}</span></button>`;
   }).join('') + blacks;
-  piano.classList.toggle('hide-letters', !state.letters);
+  piano.classList.toggle('hide-letters', !settings.letters);
 }
 
 function showMode() {
-  $('#pad').hidden = state.mode !== 'pad';
-  $('#pianoWrap').hidden = state.mode !== 'piano';
-  $('#tagline').textContent = state.mode === 'pad' ? 'Level 3 · Tap the letter of the note' : 'Level 3 · Find the note on the piano';
-  $('#kbtip').innerHTML = state.mode === 'pad'
+  $('#pad').hidden = settings.mode !== 'pad';
+  $('#pianoWrap').hidden = settings.mode !== 'piano';
+  $('#tagline').textContent = settings.mode === 'pad' ? 'Level 3 · Tap the letter of the note' : 'Level 3 · Find the note on the piano';
+  $('#kbtip').innerHTML = settings.mode === 'pad'
     ? 'Laptop: type the letter <kbd>A</kbd>–<kbd>G</kbd>.'
     : 'Laptop: type the letter <kbd>A</kbd>–<kbd>G</kbd>. Tap the piano to practise finding the exact key.';
 }
@@ -196,11 +201,12 @@ if (hasKeyboard()) document.body.classList.add('kb');
 document.addEventListener('keydown', e => {
   if (e.metaKey || e.ctrlKey || e.altKey || e.repeat) return;
   const k = e.key.toUpperCase();
+  if (!$('#setup').hidden) return; // typing on the setup screen never answers
   if (LETTERS.includes(k)) {
     document.body.classList.add('kb');
     e.preventDefault();
     if (!$('#finish').hidden) return;
-    const el = state.mode === 'pad' ? document.querySelector(`.lk[data-l="${k}"]`) : null;
+    const el = settings.mode === 'pad' ? document.querySelector(`.lk[data-l="${k}"]`) : null;
     answer(k, el); // a typed letter can't pick an octave, so any key with that letter counts
   } else if ((k === ' ' || k === 'ENTER') && !$('#finish').hidden && !/** @type {Element} */ (e.target).closest('button, a')) {
     e.preventDefault(); newGame();
@@ -210,15 +216,9 @@ document.addEventListener('keydown', e => {
 $('#hearBtn').addEventListener('click', () => { if (state.target >= 0) Sound.play(NOTES[state.target].midi); });
 $('#againBtn').addEventListener('click', newGame);
 
-radioGroup($('#modeSeg'), v => { state.mode = v === 'piano' ? 'piano' : 'pad'; memory.set('flash-mode', state.mode); showMode(); newGame(); }, state.mode);
-radioGroup($('#handSeg'), v => { state.hand = /** @type {Hand} */ (v); memory.set('flash-hand', v); newGame(); }, state.hand);
-radioGroup($('#lettersSeg'), v => {
-  state.letters = v === 'on'; memory.set('flash-letters', v);
-  piano.classList.toggle('hide-letters', !state.letters);
-}, state.letters ? 'on' : 'off');
+$('#changeBtn').addEventListener('click', screen.open);
 
-/* ---------- Start ---------- */
+/* ---------- Start: the shared setup screen comes first, with this device's last choices ---------- */
 $('#staff').innerHTML = staffMarkup();
-showMode();
-newGame();
+screen.open();
 enableOffline();

@@ -23,54 +23,44 @@
   <header class="top">
     <div class="brand">
       <a class="btn home" href="../" aria-label="All games"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Games</a>
-      <div><h1>Note Flash</h1><p id="tagline">Level 3 · Tap the letter of the note</p></div>
-    </div>
-    <div class="controls">
-      <div class="seg" id="modeSeg" role="radiogroup" aria-label="How to answer">
-        <button type="button" role="radio" data-v="pad" aria-checked="true">Letter Pad</button>
-        <button type="button" role="radio" data-v="piano" aria-checked="false">Piano Keys</button>
-      </div>
-      <div class="seg" id="handSeg" role="radiogroup" aria-label="Which hand">
-        <button type="button" role="radio" data-v="left" aria-checked="true">Left hand</button>
-        <button type="button" role="radio" data-v="right" aria-checked="false">Right hand</button>
-        <button type="button" role="radio" data-v="both" aria-checked="false">Both hands</button>
-      </div>
+      <div><h1>Note Flash</h1><p id="tagline">Level 3 · Set up practice</p></div>
     </div>
   </header>
 
-  <div class="progress" aria-label="Progress">
-    <span class="count" id="count">1 / 10</span>
-    <div class="slots" id="slots"></div>
-  </div>
+  <section class="setup" id="setup" aria-label="Set up practice" hidden></section>
 
-  <section class="stage" id="stage">
-    <div class="sheet">
-      <svg class="staff" id="staff" viewBox="0 80 600 470" role="img" aria-label="A note on the staff"></svg>
-      <div class="ask" id="ask" aria-live="polite">What note is this?</div>
-      <button type="button" class="btn hear" id="hearBtn" aria-label="Hear the note"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 17.5a3 3 0 1 1-2-2.83V5.5l12-2.5v11.5a3 3 0 1 1-2-2.83V6.9L9 8.6v8.9z"/></svg><span>Hear it</span></button>
+  <div class="game" id="game" hidden>
+    <div class="progress" aria-label="Progress">
+      <span class="count" id="count">1 / 10</span>
+      <div class="slots" id="slots"></div>
     </div>
-    <div class="finish" id="finish" hidden>
-      <h2>You did it!</h2>
-      <div class="row" id="finishRow"></div>
-      <p id="finishMsg"></p>
-      <button type="button" class="btn" id="againBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.5-5.8"/><path d="M4 4v4.5h4.5"/></svg>Play again</button>
-    </div>
-  </section>
 
-  <section class="answer-area" id="answerArea" aria-label="Answer">
-    <div class="pad" id="pad"></div>
-    <div class="piano-wrap" id="pianoWrap" hidden>
-      <div class="piano" id="piano"></div>
-      <div class="piano-foot">
-        <p class="tip">Find the exact key. Middle C has the blue stripe.</p>
-        <div class="seg" id="lettersSeg" role="radiogroup" aria-label="Letters on the keys">
-          <button type="button" role="radio" data-v="on" aria-checked="true">Letters on keys</button>
-          <button type="button" role="radio" data-v="off" aria-checked="false">No letters</button>
+    <section class="stage" id="stage">
+      <div class="sheet">
+        <svg class="staff" id="staff" viewBox="0 80 600 470" role="img" aria-label="A note on the staff"></svg>
+        <div class="ask" id="ask" aria-live="polite">What note is this?</div>
+        <button type="button" class="btn hear" id="hearBtn" aria-label="Hear the note"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 17.5a3 3 0 1 1-2-2.83V5.5l12-2.5v11.5a3 3 0 1 1-2-2.83V6.9L9 8.6v8.9z"/></svg><span>Hear it</span></button>
+      </div>
+      <div class="finish" id="finish" hidden>
+        <h2>You did it!</h2>
+        <div class="row" id="finishRow"></div>
+        <p id="finishMsg"></p>
+        <div class="finish-btns">
+          <button type="button" class="btn" id="againBtn"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12a8 8 0 1 0 2.5-5.8"/><path d="M4 4v4.5h4.5"/></svg>Play again</button>
+          <button type="button" class="btn soft" id="changeBtn">Change settings</button>
         </div>
       </div>
-    </div>
-  </section>
-  <p class="kbtip" id="kbtip">Laptop: type the letter <kbd>A</kbd>–<kbd>G</kbd>.</p>
+    </section>
+
+    <section class="answer-area" id="answerArea" aria-label="Answer">
+      <div class="pad" id="pad"></div>
+      <div class="piano-wrap" id="pianoWrap" hidden>
+        <div class="piano" id="piano"></div>
+        <p class="tip">Find the exact key. Middle C has the blue stripe.</p>
+      </div>
+    </section>
+    <p class="kbtip" id="kbtip">Laptop: type the letter <kbd>A</kbd>–<kbd>G</kbd>.</p>
+  </div>
 </main>
 </body>
 </html>

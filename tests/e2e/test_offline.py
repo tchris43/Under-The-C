@@ -26,6 +26,7 @@ def test_games_work_offline_after_one_visit(page, base_url, browser_setup):
             assert page.locator("h1").inner_text() in ("Under the C", "Under the Sea", "Who Lives Here?", "Note Flash")
         # and a game still plays
         page.goto(base_url + "note-flash/")
+        page.click("#playBtn")
         t = int(page.get_attribute("#stage", "data-target"))
         page.click(f'.lk[data-l="{"CDEFGABCDEFG"[t]}"]')
         page.wait_for_selector(".slot.filled")
@@ -48,6 +49,7 @@ def test_an_update_shows_a_note_instead_of_reloading_mid_game(page, base_url):
     page.wait_for_function("navigator.serviceWorker.controller !== null || navigator.serviceWorker.ready.then(() => false)")
     page.reload()
     page.wait_for_function("navigator.serviceWorker.controller !== null")
+    page.click("#playBtn")
     before = page.get_attribute("#stage", "data-target")
     # Simulate the moment a newly deployed version takes over
     page.evaluate("navigator.serviceWorker.dispatchEvent(new Event('controllerchange'))")
