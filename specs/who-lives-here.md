@@ -3,7 +3,8 @@
 Levels 1 and 2. Tests: `tests/e2e/test_who_lives_here.py`.
 
 1. A game is ten rounds. Each round earns a sticker of its friend(s), with a gold star if it was right first try.
-2. Hand choice: Left hand (default), Right hand, Both hands. Only that hand's notes come up.
+2. The shared setup screen comes first (see kit.md): friends and level. Only the chosen friends come up.
+   During play there are no settings buttons on screen, only the settings icon, which brings the setup screen back.
 
 ## Level 1
 3. One plain note on the grand staff, placed left to right by pitch.

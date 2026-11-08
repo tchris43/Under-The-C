@@ -13,7 +13,7 @@ What every game relies on. Tests: `tests/unit/notes.test.js`, `tests/unit/logic.
 
 ## Choosing questions (logic.js)
 8. A note never comes up twice in a row.
-9. Questions only use the notes of the chosen hand.
+9. Questions only use the chosen friends.
 10. Level 2 pairs are always a step or a skip, about half each.
 11. Animal choices are three different friends, always including the right one and, when possible, a next-door neighbour.
 
@@ -43,3 +43,20 @@ What every game relies on. Tests: `tests/unit/notes.test.js`, `tests/unit/logic.
 27. Only the public site sends, and only milestones 1 to 10 ("home-play-3", "tab-play-10plus"): no id, cookie or referrer.
 28. The beta copy and local testing never send anything.
 29. The home page says plainly what is counted.
+
+## Shared setup screen (settings.js rules, setup.js screen)
+Rules tests: `tests/unit/settings.test.js`. Screen tests: `tests/e2e/test_setup_screen.py` and each quiz game's browser tests. Under the Sea keeps its own view buttons.
+30. A quiz game opens on the setup screen with this device's last choices; Play starts it; the settings icon brings it back.
+31. Friends: hand shortcuts (Left, Right, Both) or tap friends one by one, low to high. A shortcut lights up only for an exact hand.
+32. At least 2 friends. Level 2 needs two friends a step or skip apart; the screen says why when Play is off.
+33. The chosen friends are shared by every game; answer mode, letters on keys and level are saved per game.
+34. Broken saved choices fall back to the defaults. A device with no saved friends keeps its old hand choice.
+35. The settings icon never throws away a game in progress: "Back to game", or Play with nothing changed, returns to it.
+    Only a real change starts a new game. A friend still flying lands on its own note first, never on the next game.
+36. On a phone the settings icon stays in the header row, and the Level choices stay one row of two buttons.
+
+## One screen, no scrolling (kit.css one-screen layout; tests/e2e/test_no_scroll.py)
+37. During play a kid never scrolls, on an iPad in Safari or from the home screen, held either way: the whole page
+    fits and every answer button is on screen. The staff takes the height that's left and scales to fit; answer
+    buttons stay at least 44px tall. The setup screen is for the teacher and may scroll.
+38. In a game, the "New games are ready!" note sits in the header row, so it never covers an answer.

@@ -29,6 +29,8 @@ const FILES = [
   'kit/notes.js',
   'kit/offline.js',
   'kit/plays.js',
+  'kit/settings.js',
+  'kit/setup.js',
   'kit/sound.js',
   'kit/staff.js',
   'kit/ui.js',
