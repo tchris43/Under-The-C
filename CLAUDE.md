@@ -21,6 +21,7 @@ space) comes from her; the specs in `specs/` say what each game does in plain wo
   kit; the kit never imports a game. A new game never edits another game.
 - Plain ES modules with `// @ts-check` and JSDoc types, loaded directly by the browser. No build step.
 - Links are relative, because the site lives at `/Under-The-C/` on GitHub Pages.
+- Games fit one screen with no scrolling at the sizes in `specs/kit.md`; new games use the shared layout.
 
 ## Music rules (tested in tests/unit/notes.test.js)
 - Stems up below the middle line of each staff, down on or above it.

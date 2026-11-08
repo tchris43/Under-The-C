@@ -48,4 +48,8 @@ Rules tests: `tests/unit/settings.test.js`. Screen tests: `tests/e2e/test_setup_
 30. During play a kid never scrolls, on an iPad in Safari or from the home screen, held either way: the whole page
     fits and every answer button is on screen. The staff takes the height that's left and scales to fit; answer
     buttons stay at least 44px tall. The setup screen is for the teacher and may scroll.
+    Sizes (visible area, CSS px): Safari landscape 1080x740, Safari portrait 810x1000, home-screen landscape
+    1080x810, home-screen portrait 810x1080. Turning the iPad mid-round keeps the round and still fits.
+    Shared layout: `body[data-screen="play"]` in kit.css; the part that should take the leftover height is `.stage`
+    (quiz games) or has class `grow`.
 31. In a game, the "New games are ready!" note sits in the header row, so it never covers an answer.
