@@ -12,11 +12,14 @@ space) comes from her; the specs in `specs/` say what each game does in plain wo
 - Only `localStorage` for small per-device conveniences, through `memory` in `site/kit/ui.js`.
 - Never build HTML from text a person typed. Markup comes only from constants and numbers in the code.
 - No spoken voice. Sounds are piano notes, a soft miss sound and a cheer.
+- The microphone only through `listen` in `site/kit/listen.js`: started by a tap, turned into note numbers on the
+  device, never recorded, stored or sent. Every page that listens works by tapping too.
 
 ## Architecture
 - `site/kit/` is shared by every game: `notes.js` (the one table of friends, notes, staff steps, hands, music
   rules), `characters.js` (drawings), `sound.js`, `staff.js` (grand staff markup), `logic.js` (pure question
-  logic), `ui.js` (DOM helpers), `kit.css` (tokens and shared components).
+  logic), `ui.js` (DOM helpers), `kit.css` (tokens and shared components),
+  `listen.js` (hears one piano note at a time through the microphone).
 - One folder per game under `site/`, each with `index.html`, `main.js`, `style.css`. A game imports from the
   kit; the kit never imports a game. A new game never edits another game.
 - Plain ES modules with `// @ts-check` and JSDoc types, loaded directly by the browser. No build step.

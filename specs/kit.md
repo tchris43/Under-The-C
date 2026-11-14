@@ -32,3 +32,9 @@ What every game relies on. Tests: `tests/unit/notes.test.js`, `tests/unit/logic.
     them in the background, then shows "New games are ready!" with an Update button. It never reloads by itself.
 21. The first visit shows no update note.
 22. Adding `?seed=<number>` to a game link deals the same notes every time (a shared practice set; also keeps tests exact).
+
+## Listening (listen.js) (tests/unit/listen.test.js)
+23. Hears the pitch of a piano-like note from low C (C3) to high C (C6) exactly.
+24. Silence and noise give no note.
+25. A played line gives one note per key struck, in order, including the same key struck twice.
+26. While the app is making a sound, nothing is heard.
