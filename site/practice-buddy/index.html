@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; media-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<title>Practice Buddy · Under the C</title>
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="manifest" href="../manifest.webmanifest">
+<link rel="apple-touch-icon" href="../icons/apple-touch-icon.png">
+<meta name="theme-color" content="#2F86B9">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Under the C">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="stylesheet" href="../kit/kit.css">
+<link rel="stylesheet" href="style.css">
+<script type="module" src="main.js"></script>
+</head>
+<body>
+<main class="app">
+  <header class="top">
+    <div class="brand">
+      <a class="btn home" href="../" aria-label="All games"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Games</a>
+      <div><h1>Practice Buddy</h1><p>Play on your real piano. I’ll listen!</p></div>
+    </div>
+  </header>
+
+  <section class="panel listen" id="listenBar">
+    <button type="button" class="btn" id="micBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>
+      <span id="micLabel">Listen to my piano</span>
+    </button>
+    <div class="meter" aria-hidden="true"><i id="meterFill"></i></div>
+    <div class="heard" aria-live="polite"><span>I heard</span><strong id="heardNote">–</strong></div>
+    <p class="hint wide" id="micStatus">The sound stays on this device. Nothing is recorded or sent anywhere.</p>
+  </section>
+
+  <section class="panel" id="planPanel">
+    <div class="step"><b>★</b><h2>Pick a practice plan</h2></div>
+    <div class="plans" id="planList"></div>
+  </section>
+
+  <section class="panel" id="missionPanel" hidden>
+    <div class="mission-head">
+      <h2 id="missionTitle"></h2>
+      <div class="row">
+        <button type="button" class="btn small soft" id="listBtn">All songs</button>
+        <div class="dots" id="dots" aria-label="Missions done"></div>
+        <button type="button" class="btn small soft" id="hearSongBtn">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 17.5a3 3 0 1 1-2-2.83V5.5l12-2.5v11.5a3 3 0 1 1-2-2.83V6.9L9 8.6v8.9z"/></svg>Hear the song</button>
+      </div>
+    </div>
+    <p class="hint" id="missionGoal"></p>
+    <div class="missions" id="missions"></div>
+    <details class="grownups"><summary>For grown-ups</summary><p id="missionTip"></p></details>
+  </section>
+
+  <section class="panel" id="drillPanel" hidden>
+    <div class="row" style="justify-content:space-between">
+      <button type="button" class="btn small soft" id="backBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Missions</button>
+      <button type="button" class="btn small soft" id="metroBtn" hidden aria-pressed="false">Beat: off</button>
+    </div>
+    <div class="drill" id="drill"></div>
+    <div class="keys-wrap" id="keysWrap"><div class="keys" id="keys"></div></div>
+    <p class="hint">Works best in a quiet room with the iPad near the piano. Play one note at a time. You can also tap the keys on screen.</p>
+  </section>
+</main>
+</body>
+</html>

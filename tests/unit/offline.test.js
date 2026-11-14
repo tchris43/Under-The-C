@@ -39,7 +39,7 @@ test('the offline helper only handles this site, and is stamped with a version o
 });
 
 test('every page links the app manifest and home-screen icon', () => {
-  for (const page of ['index.html', 'under-the-sea/index.html', 'who-lives-here/index.html', 'note-flash/index.html']) {
+  for (const page of ['index.html', 'under-the-sea/index.html', 'who-lives-here/index.html', 'note-flash/index.html', 'practice-buddy/index.html']) {
     const html = readFileSync(join(SITE, page), 'utf8');
     assert.match(html, /rel="manifest" href="(\.\.\/)?manifest\.webmanifest"/, page);
     assert.match(html, /rel="apple-touch-icon"/, page);
