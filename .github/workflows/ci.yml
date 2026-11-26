@@ -71,7 +71,7 @@ jobs:
           fi
       - name: Stamp the offline helper with this version, so devices pick up the update
         run: sed -i "s/__VERSION__/$(git -C stable rev-parse HEAD)/" stable/site/sw.js
-      - uses: actions/configure-pages@v5
+      - uses: actions/configure-pages@v6
       - uses: actions/upload-pages-artifact@v3
         with:
           path: stable/site
