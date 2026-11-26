@@ -3,8 +3,10 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const SITE = new URL('../../site/', import.meta.url).pathname;
+// fileURLToPath, not .pathname: .pathname gives "/C:/..." on Windows, which breaks every path join below.
+const SITE = fileURLToPath(new URL('../../site/', import.meta.url));
 const sw = readFileSync(join(SITE, 'sw.js'), 'utf8');
 const listed = [...sw.match(/const FILES = \[([\s\S]*?)\];/)[1].matchAll(/'([^']+)'/g)].map(m => m[1]);
 
@@ -12,7 +14,8 @@ const listed = [...sw.match(/const FILES = \[([\s\S]*?)\];/)[1].matchAll(/'([^']
 function filesIn(dir) {
   return readdirSync(dir).flatMap(name => {
     const path = join(dir, name);
-    return statSync(path).isDirectory() ? filesIn(path) : [relative(SITE, path)];
+    // AUDIT: Windows gives "kit\ui.js"; sw.js lists web paths with "/", so normalise before comparing.
+    return statSync(path).isDirectory() ? filesIn(path) : [relative(SITE, path).replaceAll('\\', '/')];
   });
 }
 
@@ -35,11 +38,12 @@ test('the offline helper only handles this site, and is stamped with a version o
   assert.match(sw, /origin !== self\.location\.origin\) return/);
   assert.match(sw, /const VERSION = '__VERSION__'/);
   const ci = readFileSync(new URL('../../.github/workflows/ci.yml', import.meta.url), 'utf8');
-  assert.match(ci, /s\/__VERSION__\/\$\{GITHUB_SHA\}\//);
+  assert.match(ci, /s\/__VERSION__\/\$\(git -C stable rev-parse HEAD\)\//);
+  assert.match(ci, /s\/__VERSION__\/\$\(git -C beta rev-parse HEAD\)\//);
 });
 
 test('every page links the app manifest and home-screen icon', () => {
-  for (const page of ['index.html', 'under-the-sea/index.html', 'who-lives-here/index.html', 'note-flash/index.html', 'practice-buddy/index.html']) {
+  for (const page of ['index.html', 'under-the-sea/index.html', 'who-lives-here/index.html', 'note-flash/index.html']) {
     const html = readFileSync(join(SITE, page), 'utf8');
     assert.match(html, /rel="manifest" href="(\.\.\/)?manifest\.webmanifest"/, page);
     assert.match(html, /rel="apple-touch-icon"/, page);

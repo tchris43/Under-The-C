@@ -12,9 +12,22 @@ Every game offers Left hand, Right hand and Both hands practice.
 
 ## Safe for kids by design
 
-- A static website: no accounts, logins, cookies, ads, analytics or trackers, and no server or database.
+- A static website: no accounts, logins, cookies, ads or trackers, and no server or database.
 - No outside scripts, fonts or libraries. Every page tells the browser to load nothing from any other site.
-- Progress (last hand chosen) stays only in that device's browser.
+- One anonymous count: on the public site, finishing a game sends a milestone such as "home-play-4" to
+  GoatCounter (a privacy-friendly, open-source counter). No id, name, cookie or referrer: it says *a* device
+  finished its 4th game, never *which*. The beta copy and local testing send nothing.
+- Progress (last hand chosen, games finished) stays only in that device's browser.
+
+## Two copies: public and beta
+
+| Link | Branch | Who |
+| --- | --- | --- |
+| `https://tchris43.github.io/Under-The-C/` | `main` | Everyone |
+| `https://tchris43.github.io/Under-The-C/beta/` | `beta` | The teacher, with her students, first |
+
+Work on a branch, open a pull request into `beta`, try it in lessons, then open a pull request from `beta`
+into `main`. Either push redeploys both copies. They keep separate offline files and settings on a device.
 
 ## Offline home-screen app
 

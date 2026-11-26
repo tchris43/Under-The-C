@@ -2,6 +2,7 @@
 /** Small DOM helpers shared by the games. */
 import { charSVG } from './characters.js';
 import { seededRandom } from './logic.js';
+import { CHANNEL } from './channel.js';
 
 /**
  * querySelector that fails loudly, so a missing element is caught by the tests instead of breaking silently.
@@ -26,12 +27,14 @@ export function radioGroup(group, onPick, initial) {
   return set;
 }
 
-/** Per-device memory for small conveniences (last hand chosen). Silently does nothing when storage is blocked. */
+/** Per-device memory for small conveniences (last hand chosen). Silently does nothing when storage is blocked.
+ *  The beta copy keeps its own labels, so it never mixes with the public site's. */
+const PREFIX = CHANNEL === 'beta' ? 'under-the-c-beta' : 'under-the-c';
 export const memory = {
   /** @param {string} key  @param {string} fallback */
-  get(key, fallback) { try { return localStorage.getItem(`under-the-c:${key}`) ?? fallback; } catch { return fallback; } },
+  get(key, fallback) { try { return localStorage.getItem(`${PREFIX}:${key}`) ?? fallback; } catch { return fallback; } },
   /** @param {string} key  @param {string} value */
-  set(key, value) { try { localStorage.setItem(`under-the-c:${key}`, value); } catch { /* storage blocked: fine */ } },
+  set(key, value) { try { localStorage.setItem(`${PREFIX}:${key}`, value); } catch { /* storage blocked: fine */ } },
 };
 
 /** Random numbers for dealing notes: repeatable when the link has ?seed=<number>, otherwise truly random. */

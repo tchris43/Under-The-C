@@ -13,6 +13,7 @@ import { staffMarkup, noteMarkup, homeMarkup, burst } from '../kit/staff.js';
 import { nextNote, nextPair, animalChoices, pick } from '../kit/logic.js';
 import { $, radioGroup, memory, hasKeyboard, reducedMotion, stickers, randomFromLink } from '../kit/ui.js';
 import { enableOffline } from '../kit/offline.js';
+import { countFinishedGame } from '../kit/plays.js';
 
 const ROUNDS = 10;
 const CHOICES = 3;
@@ -264,6 +265,7 @@ function finish() {
   $('#choices').innerHTML = '';
   stickers.markCurrent($('#slots'), -1);
   state.phase = 'done';
+  countFinishedGame();
   syncStage();
   Sound.cheer();
 }

@@ -20,7 +20,8 @@ def test_level_1_left_hand_plays_ten_rounds_of_left_hand_notes(page, base_url):
     assert page.locator(".slot.filled").count() == 10
     assert page.locator(".slot .star").count() == 10
     assert "Every round right" in page.locator("#finishMsg").inner_text()
-    clean(page)
+    assert page.evaluate("localStorage.getItem('under-the-c:gamesFinished')") == "1"
+    clean(page)  # local testing never sends a count
 
 
 def test_three_different_friends_to_choose_from(page, base_url):

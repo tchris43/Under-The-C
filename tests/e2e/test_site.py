@@ -39,6 +39,11 @@ def test_buttons_are_big_enough_for_small_fingers(page, base_url, path):
     assert small == [], small
 
 
+def test_home_page_says_what_is_counted(page, base_url):
+    page.goto(base_url)
+    assert "anonymously" in page.locator(".privacy").inner_text()
+
+
 def test_home_page_links_to_every_game(page, base_url):
     page.goto(base_url)
     names = page.locator("a.game .name").all_inner_texts()

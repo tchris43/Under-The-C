@@ -5,21 +5,24 @@ A piano teacher uses them with her students. The Note Friends story (animals tha
 space) comes from her; the specs in `specs/` say what each game does in plain words.
 
 ## Hard rules (kid safety)
-- Static site only, served by GitHub Pages from `site/`. No server code, accounts, cookies, analytics, ads,
-  third-party scripts, CDNs or web fonts. No network requests at runtime.
+- Static site only, served by GitHub Pages from `site/`. No server code, accounts, cookies, ads,
+  third-party scripts, CDNs or web fonts. No network requests at runtime, with one exception:
+  `site/kit/plays.js` sends anonymous finished-game milestones (`home-play-4`, no id, no referrer) to
+  `under-the-c.goatcounter.com`, from the public site only. Never add identifiers or other data to it.
 - No runtime dependencies. Don't add npm packages to the site. Test tools live in `requirements-dev.txt`.
-- Every page keeps the Content-Security-Policy and referrer meta tags exactly as they are.
+- Every page keeps the Content-Security-Policy and referrer meta tags exactly as they are (the only outside
+  host allowed is the GoatCounter one above, in `connect-src`).
+- Two channels share one website on a device: the public site at `/Under-The-C/` (branch `main`) and the
+  teacher's beta at `/Under-The-C/beta/` (branch `beta`). Offline caches and `memory` keys are labelled per
+  channel (`site/kit/channel.js`, `site/sw.js`); never clear or read the other channel's.
 - Only `localStorage` for small per-device conveniences, through `memory` in `site/kit/ui.js`.
 - Never build HTML from text a person typed. Markup comes only from constants and numbers in the code.
 - No spoken voice. Sounds are piano notes, a soft miss sound and a cheer.
-- The microphone only through `listen` in `site/kit/listen.js`: started by a tap, turned into note numbers on the
-  device, never recorded, stored or sent. Every page that listens works by tapping too.
 
 ## Architecture
 - `site/kit/` is shared by every game: `notes.js` (the one table of friends, notes, staff steps, hands, music
   rules), `characters.js` (drawings), `sound.js`, `staff.js` (grand staff markup), `logic.js` (pure question
-  logic), `ui.js` (DOM helpers), `kit.css` (tokens and shared components),
-  `listen.js` (hears one piano note at a time through the microphone).
+  logic), `ui.js` (DOM helpers), `kit.css` (tokens and shared components).
 - One folder per game under `site/`, each with `index.html`, `main.js`, `style.css`. A game imports from the
   kit; the kit never imports a game. A new game never edits another game.
 - Plain ES modules with `// @ts-check` and JSDoc types, loaded directly by the browser. No build step.
@@ -35,8 +38,8 @@ space) comes from her; the specs in `specs/` say what each game does in plain wo
 - Every behavior in `specs/<game>.md` has a test, and it passes.
 - `npm run check` passes: syntax, unit tests, browser tests.
 - Look at the page at iPad and phone sizes before calling it done.
-- Never push to main. Work on a branch and open a pull request; CI runs Chrome and iPad Safari engines
-  and only a green main deploys.
+- Never push to main. Work on a branch and open a pull request into `beta` (the teacher tries it first),
+  then `beta` into `main` for everyone. CI runs Chrome and iPad Safari engines; only green branches deploy.
 
 ## Commands
 - `npm run serve` then open http://localhost:4173

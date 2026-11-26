@@ -2,7 +2,7 @@ name: Test and deploy
 
 on:
   push:
-    branches: [main]
+    branches: [main, beta]
   pull_request:
   workflow_dispatch:
 
@@ -39,11 +39,16 @@ jobs:
         run: python -m pytest tests/e2e -q
 
   deploy:
-    # Only a green main branch reaches students.
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    # A green main reaches everyone at /Under-The-C/; a green beta reaches the teacher at /Under-The-C/beta/.
+    # Either push rebuilds both, from the latest main and beta.
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/beta')
     needs: test
     runs-on: ubuntu-latest
+    concurrency:
+      group: pages-deploy
+      cancel-in-progress: false
     permissions:
+      contents: read
       pages: write
       id-token: write
     environment:
@@ -51,11 +56,24 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: main
+          path: stable
+      - name: Add the beta copy at /beta/, if a beta branch exists
+        run: |
+          if git -C stable ls-remote --exit-code --heads origin beta >/dev/null; then
+            git -C stable fetch --depth 1 origin beta
+            git -C stable worktree add ../beta FETCH_HEAD
+            sed -i "s/__VERSION__/$(git -C beta rev-parse HEAD)/" beta/site/sw.js
+            sed -i 's/"name": "Under the C"/"name": "Under the C Beta"/; s/"short_name": "Under the C"/"short_name": "UTC Beta"/' beta/site/manifest.webmanifest
+            rm -rf stable/site/beta
+            cp -r beta/site stable/site/beta
+          fi
       - name: Stamp the offline helper with this version, so devices pick up the update
-        run: sed -i "s/__VERSION__/${GITHUB_SHA}/" site/sw.js
+        run: sed -i "s/__VERSION__/$(git -C stable rev-parse HEAD)/" stable/site/sw.js
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: site
+          path: stable/site
       - id: deployment
         uses: actions/deploy-pages@v4

@@ -12,6 +12,7 @@ import { staffMarkup, noteMarkup, homeMarkup, burst } from '../kit/staff.js';
 import { nextNote } from '../kit/logic.js';
 import { $, radioGroup, memory, hasKeyboard, stickers, replay, randomFromLink } from '../kit/ui.js';
 import { enableOffline } from '../kit/offline.js';
+import { countFinishedGame } from '../kit/plays.js';
 
 const ROUNDS = 10;
 const rand = randomFromLink();
@@ -159,6 +160,7 @@ function finish() {
   stickers.markCurrent($('#slots'), -1);
   stage.dataset.phase = 'finished';
   Sound.cheer();
+  countFinishedGame();
 }
 
 /* ---------- Input ---------- */
