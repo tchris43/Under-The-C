@@ -35,7 +35,8 @@ test('the offline helper only handles this site, and is stamped with a version o
   assert.match(sw, /origin !== self\.location\.origin\) return/);
   assert.match(sw, /const VERSION = '__VERSION__'/);
   const ci = readFileSync(new URL('../../.github/workflows/ci.yml', import.meta.url), 'utf8');
-  assert.match(ci, /s\/__VERSION__\/\$\{GITHUB_SHA\}\//);
+  assert.match(ci, /s\/__VERSION__\/\$\(git -C stable rev-parse HEAD\)\//);
+  assert.match(ci, /s\/__VERSION__\/\$\(git -C beta rev-parse HEAD\)\//);
 });
 
 test('every page links the app manifest and home-screen icon', () => {

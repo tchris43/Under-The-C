@@ -38,6 +38,8 @@ def test_a_full_game_ends_with_a_celebration(page, base_url):
     page.wait_for_selector("#finish:not([hidden])", timeout=5000)
     assert set(seen) <= LEFT
     assert page.locator(".slot.filled").count() == 10
+    assert page.evaluate("localStorage.getItem('under-the-c:gamesFinished')") == "1"
+    clean(page)  # local testing never sends a count
 
 
 def test_piano_keys_mode_needs_the_exact_key(page, base_url):

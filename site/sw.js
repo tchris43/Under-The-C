@@ -3,7 +3,12 @@
 // Same-site files only: it never fetches or stores anything from another website.
 
 const VERSION = '__VERSION__'; // CI replaces this with the commit id on each deploy, so devices get updates
-const CACHE = `under-the-c-${VERSION}`;
+// The public site and the beta copy (/beta/) share one website on a device, so they share one cache store.
+// Each labels its own boxes and only ever clears its own: 'beta-' never starts with 'under-the-c-'.
+const BETA = /\/beta\/sw\.js$/.test(self.location.pathname);
+const PREFIX = BETA ? 'beta-' : 'under-the-c-';
+const CACHE = `${PREFIX}${VERSION}`;
+const BETA_PATH = new URL('beta/', self.location.href).pathname;
 
 // Every file the site needs. tests/unit/offline.test.js fails if a file in site/ is missing here.
 const FILES = [
@@ -17,12 +22,14 @@ const FILES = [
   'icons/icon-192.png',
   'icons/icon-512.png',
   'icons/icon-maskable-512.png',
+  'kit/channel.js',
   'kit/characters.js',
   'kit/kit.css',
   'kit/listen.js',
   'kit/logic.js',
   'kit/notes.js',
   'kit/offline.js',
+  'kit/plays.js',
   'kit/sound.js',
   'kit/staff.js',
   'kit/ui.js',
@@ -51,7 +58,7 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(k => k.startsWith('under-the-c-') && k !== CACHE).map(k => caches.delete(k))))
+      .then(keys => Promise.all(keys.filter(k => k.startsWith(PREFIX) && k !== CACHE).map(k => caches.delete(k))))
       .then(() => self.clients.claim()),
   );
 });
@@ -59,6 +66,7 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const request = event.request;
   if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return;
+  if (!BETA && new URL(request.url).pathname.startsWith(BETA_PATH)) return; // the beta copy has its own helper
   event.respondWith((async () => {
     const cache = await caches.open(CACHE);
     const saved = await cache.match(request, { ignoreSearch: true });

@@ -38,3 +38,14 @@ What every game relies on. Tests: `tests/unit/notes.test.js`, `tests/unit/logic.
 24. Silence and noise give no note.
 25. A played line gives one note per key struck, in order, including the same key struck twice.
 26. While the app is making a sound, nothing is heard.
+
+## Public and beta copies (kit/channel.js, sw.js, ui.js) — tests/unit/plays.test.js
+27. The beta copy lives at /beta/ and is recognised by that folder.
+28. Each copy clears only its own old offline files, never the other's; the public helper leaves /beta/ pages alone.
+29. Each copy keeps its own small settings on a device.
+
+## Counting finished games (kit/plays.js) — tests/unit/plays.test.js, test_note_flash.py, test_who_lives_here.py
+30. Finishing a whole game in Note Flash or Who Lives Here? adds one to this device's count.
+31. Only the public site sends, and only milestones 1 to 10 ("home-play-3", "tab-play-10plus"): no id, cookie or referrer.
+32. The beta copy and local testing never send anything.
+33. The home page says plainly what is counted.
