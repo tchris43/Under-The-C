@@ -78,3 +78,23 @@ def test_a_chosen_friends_glow_is_never_cut_off(browser_setup, base_url, size, s
             assert ring["y"] + ring["height"] <= scene["y"] + scene["height"] - border + 0.5, f"friend {i}: glow cut off at the bottom"
     finally:
         context.close()
+
+
+# Tapping a friend lights its piano key, exactly as tapping the key does (a short flash, class "lit").
+# Counter-example: drop flashKey(i) from onNote() in under-the-sea/main.js and both cases fail.
+@pytest.mark.parametrize("tap", ["friend", "key"])
+def test_the_chosen_friends_key_lights_up(browser_setup, base_url, tap):
+    browser, _ = browser_setup
+    context = browser.new_context(viewport={"width": 1024, "height": 1366}, has_touch=True)
+    page = context.new_page()
+    try:
+        page.goto(base_url + "under-the-sea/")
+        key = page.locator('#piano .wkey[data-i="3"]')  # Finn Flounder's F
+        assert "lit" not in key.get_attribute("class").split()
+        page.tap('#world .char[data-i="3"]' if tap == "friend" else '#piano .wkey[data-i="3"]')
+        assert "lit" in key.get_attribute("class").split(), "the key lights up"
+        assert page.locator('#piano .wkey.lit').count() == 1, "only that key"
+        page.wait_for_timeout(400)
+        assert "lit" not in key.get_attribute("class").split(), "and goes out again, like a key press"
+    finally:
+        context.close()
