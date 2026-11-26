@@ -4,4 +4,8 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 for f in site/*.js site/*/*.js; do node --check "$f"; done
-node --test tests/unit/*.test.js >/dev/null
+# Quiet when green, but print the full test report when anything fails, so a failure is never silent.
+if ! report=$(node --test tests/unit/*.test.js 2>&1); then
+  echo "$report" >&2
+  exit 1
+fi
