@@ -51,7 +51,7 @@ def test_parade_visits_every_friend_and_ends(page, base_url):
     clean(page)
 
 
-# The glow round a chosen friend is never cut off by the edge of the scene (Charlie Cat sits at the far right).
+# A chosen friend and the glow round it are never cut off by the edge of the scene (Charlie Cat sits at the far right).
 SIZES = {"ipad-portrait": (1024, 1366), "ipad-landscape": (1366, 1024), "safari-landscape": (1080, 740), "phone": (390, 844)}
 
 
@@ -69,7 +69,7 @@ def test_a_chosen_friends_glow_is_never_cut_off(browser_setup, base_url, size, s
         for i in (ids[0], "7", ids[-1]):  # the friends at both ends, and Charlie Cat
             page.click(f'#world .char[data-i="{i}"]')
             page.wait_for_timeout(250)
-            ring = page.locator(f'#world .char[data-i="{i}"] .ring').bounding_box()
+            ring = page.locator(f'#world .char[data-i="{i}"]').bounding_box()  # the friend, its whiskers and its glow
             scene = page.locator("#scene").bounding_box()
             border = 3  # the scene's own outline
             assert ring["x"] >= scene["x"] + border - 0.5, f"friend {i}: glow cut off on the left"
