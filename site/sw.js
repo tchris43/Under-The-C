@@ -25,7 +25,6 @@ const FILES = [
   'kit/channel.js',
   'kit/characters.js',
   'kit/kit.css',
-  'kit/listen.js',
   'kit/logic.js',
   'kit/notes.js',
   'kit/offline.js',
@@ -45,10 +44,6 @@ const FILES = [
   'note-flash/index.html',
   'note-flash/main.js',
   'note-flash/style.css',
-  'practice-buddy/',
-  'practice-buddy/index.html',
-  'practice-buddy/main.js',
-  'practice-buddy/style.css',
 ];
 
 self.addEventListener('install', event => {
