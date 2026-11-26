@@ -60,7 +60,11 @@ Rules tests: `tests/unit/settings.test.js`. Screen tests: `tests/e2e/test_setup_
     fits and every answer button is on screen. The staff takes the height that's left and scales to fit; answer
     buttons stay at least 44px tall. The setup screen is for the teacher and may scroll.
     Sizes (visible area, CSS px): Safari landscape 1080x740, Safari portrait 810x1000, home-screen landscape
-    1080x810, home-screen portrait 810x1080. Turning the iPad mid-round keeps the round and still fits.
+    1080x810, home-screen portrait 810x1080, the big iPad both ways 1024x1366 and 1366x1024, and a phone 390x844.
+    Turning the iPad mid-round keeps the round and still fits.
+    The home page also fits at every one of those sizes: all three games and the note about what is counted.
+    Under the Sea shows every friend and every piano key fully on screen, in each of its views; when its scene
+    has spare room, the sky, sea and sand fill it (never an empty strip).
     Shared layout: `body[data-screen="play"]` in kit.css; the part that should take the leftover height is `.stage`
     (quiz games) or has class `grow`.
 38. In a game, the "New games are ready!" note sits in the header row, so it never covers an answer.

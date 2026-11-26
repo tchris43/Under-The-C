@@ -11,6 +11,10 @@ SIZES = {
     "safari-portrait": {"width": 810, "height": 1000},
     "home-screen-landscape": {"width": 1080, "height": 810},
     "home-screen-portrait": {"width": 810, "height": 1080},
+    # The big iPad held both ways, and a phone (the sizes the promo is filmed at).
+    "ipad-pro-portrait": {"width": 1024, "height": 1366},
+    "ipad-pro-landscape": {"width": 1366, "height": 1024},
+    "phone": {"width": 390, "height": 844},
 }
 
 
@@ -120,5 +124,48 @@ def test_the_update_note_never_covers_an_answer(browser_setup, base_url, size, g
         header = page.locator(".top").bounding_box()
         assert n["y"] >= header["y"] and n["y"] + n["height"] <= header["y"] + header["height"] + 1, "the note sits in the header row"
         assert page.evaluate("document.documentElement.scrollHeight") <= page.evaluate("innerHeight") + 1
+    finally:
+        context.close()
+
+
+def fits(page):
+    """The page can't scroll either way."""
+    return page.evaluate("""[document.documentElement.scrollHeight <= innerHeight + 1,
+        document.documentElement.scrollWidth <= innerWidth + 1]""") == [True, True]
+
+
+@pytest.mark.parametrize("size", SIZES)
+def test_the_home_page_shows_every_game_without_scrolling(browser_setup, base_url, size):
+    browser, _ = browser_setup
+    context = browser.new_context(viewport=SIZES[size], has_touch=True)
+    page = context.new_page()
+    try:
+        page.goto(base_url)
+        window = page.evaluate("innerHeight")
+        bottoms = page.locator(".games .game").evaluate_all("els => els.map(e => e.getBoundingClientRect().bottom)")
+        assert len(bottoms) == 3 and max(bottoms) <= window, f"a game card ends at {max(bottoms):.0f}px, below {window}px"
+        assert page.locator(".privacy").is_visible(), "the note about what is counted stays on the page"
+        assert fits(page), "the home page scrolls"
+    finally:
+        context.close()
+
+
+@pytest.mark.parametrize("section", ["sea", "right", "all"])
+@pytest.mark.parametrize("size", SIZES)
+def test_under_the_sea_shows_every_friend_and_the_whole_piano(browser_setup, base_url, size, section):
+    browser, _ = browser_setup
+    context = browser.new_context(viewport=SIZES[size], has_touch=True)
+    page = context.new_page()
+    try:
+        page.goto(base_url + "under-the-sea/")
+        page.click(f'#sectionSeg button[data-v="{section}"]')
+        page.click('#world .char[data-i="7"]')  # Charlie Cat, glowing, in every section
+        page.wait_for_timeout(300)
+        w, h = page.evaluate("[innerWidth, innerHeight]")
+        boxes = page.locator("#world .char, #piano button").evaluate_all(
+            "els => els.map(e => { const r = e.getBoundingClientRect(); return [r.left, r.top, r.right, r.bottom] })")
+        off = [b for b in boxes if b[0] < -1 or b[1] < -1 or b[2] > w + 1 or b[3] > h + 1]
+        assert not off, f"{len(off)} friend(s) or key(s) are off screen: {off[:3]}"
+        assert fits(page), "Under the Sea scrolls"
     finally:
         context.close()

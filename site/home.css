@@ -20,3 +20,25 @@
 .install p { margin: 0; font-weight: 600; font-size: 16px; line-height: 1.45 }
 
 .privacy { max-width: 46rem; margin: 18px auto 8px; padding: 0 16px; font-size: 13px; line-height: 1.45; opacity: .7; text-align: center; }
+
+/* Phone: all three games, the offline tip and the privacy note on one screen (no scrolling).
+   Each card lies on its side: the friends on the left, the words on the right. */
+@media (max-width: 560px) {
+  .app { padding-top: 10px; gap: 12px }
+  .hero { gap: 12px; padding: 4px 0 0 }
+  .hero-art { width: 56px; height: 56px }
+  .hero h1 { font-size: 32px }
+  .hero p { font-size: 15px; margin-top: 4px }
+  .games { gap: 12px }
+  .game { display: grid; grid-template-columns: 92px 1fr; grid-template-rows: auto auto auto; column-gap: 12px; row-gap: 4px;
+    padding: 12px 14px; border-radius: 20px; box-shadow: 0 5px 0 var(--line) }
+  .game .art { grid-row: 1 / -1; align-self: center; height: auto; flex-wrap: wrap; justify-content: center; gap: 0 }
+  .game .art svg { width: 44px; height: 44px }
+  .game .chip { font-size: 11px; padding: 4px 8px }
+  .game .name { font-size: 22px }
+  .game .line { font-size: 14px; line-height: 1.35 }
+  .install { padding: 10px 14px; gap: 12px; border-radius: 16px }
+  .install svg { width: 24px; height: 24px }
+  .install p { font-size: 14px; line-height: 1.4 }
+  .privacy { margin: 0 auto; padding: 0 4px; font-size: 12px }
+}

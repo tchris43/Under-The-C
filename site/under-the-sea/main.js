@@ -11,6 +11,8 @@ import { $, radioGroup, memory, hasKeyboard, reducedMotion, replay } from '../ki
 import { enableOffline } from '../kit/offline.js';
 
 const INK = '#2A2238';
+// AUDIT: BLEED must exceed the widest letterbox gap; 2000 drawing units covers any screen we target.
+const BLEED = 2000; // sky, sea and sand are painted this far past the drawing so a stretched scene has no empty strip
 const WATER = 336; // sea surface: just under Charlie Cat's middle-C line
 const H = 570;
 
@@ -62,21 +64,22 @@ function buildScene() {
     <linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--sky-top)"/><stop offset="1" style="stop-color:var(--sky-bot)"/></linearGradient>
     <linearGradient id="seaG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" style="stop-color:var(--sea-top)"/><stop offset="1" style="stop-color:var(--sea-bot)"/></linearGradient>
   </defs>
-  <rect width="${W}" height="${WATER + 8}" fill="url(#skyG)"/>
+  <rect x="${-BLEED}" y="${-BLEED}" width="${W + 2 * BLEED}" height="${BLEED}" fill="var(--sky-top)"/>
+  <rect x="${-BLEED}" width="${W + 2 * BLEED}" height="${WATER + 8}" fill="url(#skyG)"/>
   <g class="stars" fill="#FFF7D6">${[[90, 40], [210, 70], [330, 28], [470, 58], [590, 24], [700, 80], [820, 36], [530, 100], [150, 104]].map(([x, y]) => `<circle cx="${x * W / 1000}" cy="${y}" r="1.8"/>`).join('')}</g>
   <circle cx="${W - 70}" cy="62" r="30" fill="var(--sun)"/>
   <g fill="var(--cloud)" opacity=".9">
     <g transform="translate(${W * 0.3} 62)"><ellipse rx="42" ry="14"/><circle cx="-14" cy="-8" r="14"/><circle cx="10" cy="-12" r="17"/></g>
     <g transform="translate(${W * 0.62} 44) scale(.8)"><ellipse rx="42" ry="14"/><circle cx="-14" cy="-8" r="14"/><circle cx="10" cy="-12" r="17"/></g>
   </g>
-  <path d="M0 ${WATER} ${waves} L${W} ${H} L0 ${H}Z" fill="url(#seaG)"/>
-  <path d="M0 ${WATER} ${waves}" fill="none" stroke="var(--foam)" stroke-width="3" opacity=".8"/>
+  <path d="M${-BLEED} ${WATER} L0 ${WATER} ${waves} L${W + BLEED} ${WATER} L${W + BLEED} ${H} L${-BLEED} ${H}Z" fill="url(#seaG)"/>
+  <path d="M${-BLEED} ${WATER} L0 ${WATER} ${waves} L${W + BLEED} ${WATER}" fill="none" stroke="var(--foam)" stroke-width="3" opacity=".8"/>
   <g fill="#FFFFFF" opacity=".07">${[0.2, 0.45, 0.72].map(f => `<path d="M${W * f - 20} ${WATER} L${W * f + 30} ${WATER} L${W * f + 90} ${H} L${W * f + 10} ${H}Z"/>`).join('')}</g>
   <g>${[0.14, 0.31, 0.5, 0.69, 0.86, 0.97].map((f, k) => {
     const x = W * f, ht = 60 + (k % 3) * 18;
     return `<path class="weed" style="--dl:${(-k * .7).toFixed(1)}s" d="M${x} ${H - 18} q-10 ${-ht * .25} 0 ${-ht * .5} t0 ${-ht * .5}" fill="none" stroke="var(--weed)" stroke-width="7" stroke-linecap="round"/>`;
   }).join('')}</g>
-  <path d="M0 ${H - 22} ${Array.from({ length: Math.ceil(W / 60) + 1 }, (_, i) => `Q${i * 60 + 30} ${H - 30 + (i % 2) * 10} ${i * 60 + 60} ${H - 22}`).join(' ')} L${W} ${H} L0 ${H}Z" fill="var(--sand)"/>
+  <path d="M0 ${H - 22} ${Array.from({ length: Math.ceil(W / 60) + 1 }, (_, i) => `Q${i * 60 + 30} ${H - 30 + (i % 2) * 10} ${i * 60 + 60} ${H - 22}`).join(' ')} L${W + BLEED} ${H - 22} L${W + BLEED} ${H} L${-BLEED} ${H} L${-BLEED} ${H - 22}Z" fill="var(--sand)"/>
   <g>${Array.from({ length: 14 }, (_, k) => {
     const x = (k * 73 + 40) % (W - 40) + 20, r = 3 + (k % 3) * 1.6;
     return `<circle class="bubble" cx="${x}" cy="${H - 30}" r="${r}" style="--t:${(6 + (k % 4)).toFixed(1)}s;--dl:${(-k * .9).toFixed(1)}s"/>`;
@@ -138,6 +141,9 @@ function buildScene() {
   h += `<g id="fx"></g>`;
   const [vy0, vy1] = SECTIONS[state.section].view;
   world.setAttribute('viewBox', `0 ${vy0} ${W} ${vy1 - vy0}`);
+  // The scene box can be taller or wider than the drawing (one-screen layout). Sit the drawing on the sand
+  // and let the sky, sea and sand painted past its edges (BLEED) fill the rest, never an empty strip.
+  world.setAttribute('preserveAspectRatio', 'xMidYMax meet');
   world.innerHTML = h;
   $('#seaTag').hidden = state.section === 'right';
   applySel(false);
