@@ -275,7 +275,7 @@ function fly(/** @type {HTMLElement} */ fromEl, /** @type {{ id: string, step: n
 
 function finish() {
   const firsts = state.results.filter(r => r.first).length;
-  $('#finishRow').innerHTML = state.results.flatMap(r => r.notes).map((i, k) => `<svg viewBox="-44 -44 88 88" aria-hidden="true" style="animation-delay:${k * 60}ms">${charSVG(NOTES[i].id)}</svg>`).join('');
+  $('#finishRow').innerHTML = state.results.flatMap(r => r.notes).map((i, k) => `<svg viewBox="-44 -44 88 88" aria-hidden="true" style="--k:${k}">${charSVG(NOTES[i].id)}</svg>`).join('');
   $('#finishMsg').textContent = firsts === ROUNDS ? 'Every round right on the first try!' : `${firsts} of ${ROUNDS} right on the first try`;
   $('#finish').hidden = false;
   $('#noteG').innerHTML = ''; $('#revealG').innerHTML = ''; $('#arcG').innerHTML = ''; $('#homes').innerHTML = '';
