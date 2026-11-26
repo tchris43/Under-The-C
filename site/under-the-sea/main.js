@@ -15,10 +15,11 @@ const INK = '#2A2238';
 const BLEED = 2000; // sky, sea and sand are painted this far past the drawing so a stretched scene has no empty strip
 const WATER = 336; // sea surface: just under Charlie Cat's middle-C line
 const H = 570;
+const GLOW = 40; // radius of the ring round a chosen friend, before scaling
 
 /** Each section shows a set of friends and zooms the picture to its half of the world. */
 const SECTIONS = {
-  right: { notes: HANDS.right, tag: 'The right-hand friends live on land', view: [16, 356] },
+  right: { notes: HANDS.right, tag: 'The right-hand friends live on land', view: [16, 366] }, // down to Charlie Cat's glow
   all: { notes: HANDS.both, tag: 'Land friends up top, sea friends down below', view: [0, H] },
   sea: { notes: HANDS.left, tag: 'The left-hand friends live under middle C', view: [266, H] },
 };
@@ -43,8 +44,9 @@ const visible = () => SECTIONS[state.section].notes;
 /** @param {number} width  @param {number} count */
 function layoutFor(width, count) {
   if (width < 700) {
-    const W = count > 8 ? 820 : 640;
-    return { W, x0: 150, x1: W - 34, s: count > 8 ? .74 : .9, clefX: 16, xs: {} };
+    const W = count > 8 ? 820 : 640, s = count > 8 ? .74 : .9;
+    // The last friend sits a whole glow (radius 40, scaled) plus a margin in from the edge, so its glow is never cut off.
+    return { W, x0: 150, x1: W - Math.ceil(GLOW * s) - 8, s, clefX: 16, xs: {} };
   }
   return { W: 1000, x0: 205, x1: 950, s: count > 8 ? .82 : 1, clefX: 24, xs: {} };
 }
@@ -132,7 +134,7 @@ function buildScene() {
   h += vis.map((i, k) => {
     const n = NOTES[i];
     return `<g class="char" data-i="${i}" tabindex="0" role="button" aria-label="${n.name}, note ${n.letter}" transform="translate(${L.xs[i]} ${yOf(n.step)}) scale(${s})">
-      <circle class="ring" r="40" fill="${n.color}"/>
+      <circle class="ring" r="${GLOW}" fill="${n.color}"/>
       <circle class="focus-ring" r="44"/>
       <g class="bob" style="--d:${(k * -0.37).toFixed(2)}s"><g class="hop">${charSVG(n.id)}</g></g>
       <circle r="44" fill="transparent"/>

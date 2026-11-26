@@ -1,4 +1,6 @@
 """Under the Sea: meet the friends, both hands."""
+import pytest
+
 from helpers import clean
 
 
@@ -47,3 +49,32 @@ def test_parade_visits_every_friend_and_ends(page, base_url):
     assert page.locator("#paradeBtn").is_enabled()
     assert page.locator("#cardName").inner_text() == "Charlie Cat"  # the parade ends at the top, middle C
     clean(page)
+
+
+# The glow round a chosen friend is never cut off by the edge of the scene (Charlie Cat sits at the far right).
+SIZES = {"ipad-portrait": (1024, 1366), "ipad-landscape": (1366, 1024), "safari-landscape": (1080, 740), "phone": (390, 844)}
+
+
+@pytest.mark.parametrize("section", ["sea", "right", "all"])
+@pytest.mark.parametrize("size", SIZES)
+def test_a_chosen_friends_glow_is_never_cut_off(browser_setup, base_url, size, section):
+    browser, _ = browser_setup
+    w, h = SIZES[size]
+    context = browser.new_context(viewport={"width": w, "height": h}, has_touch=True)
+    page = context.new_page()
+    try:
+        page.goto(base_url + "under-the-sea/")
+        page.click(f'#sectionSeg button[data-v="{section}"]')
+        ids = page.locator("#world .char").evaluate_all("els => els.map(e => e.dataset.i)")
+        for i in (ids[0], "7", ids[-1]):  # the friends at both ends, and Charlie Cat
+            page.click(f'#world .char[data-i="{i}"]')
+            page.wait_for_timeout(250)
+            ring = page.locator(f'#world .char[data-i="{i}"] .ring').bounding_box()
+            scene = page.locator("#scene").bounding_box()
+            border = 3  # the scene's own outline
+            assert ring["x"] >= scene["x"] + border - 0.5, f"friend {i}: glow cut off on the left"
+            assert ring["y"] >= scene["y"] + border - 0.5, f"friend {i}: glow cut off at the top"
+            assert ring["x"] + ring["width"] <= scene["x"] + scene["width"] - border + 0.5, f"friend {i}: glow cut off on the right"
+            assert ring["y"] + ring["height"] <= scene["y"] + scene["height"] - border + 0.5, f"friend {i}: glow cut off at the bottom"
+    finally:
+        context.close()
