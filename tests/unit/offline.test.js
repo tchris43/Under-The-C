@@ -3,8 +3,10 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const SITE = new URL('../../site/', import.meta.url).pathname;
+// fileURLToPath, not .pathname: .pathname gives "/C:/..." on Windows, which breaks every path join below.
+const SITE = fileURLToPath(new URL('../../site/', import.meta.url));
 const sw = readFileSync(join(SITE, 'sw.js'), 'utf8');
 const listed = [...sw.match(/const FILES = \[([\s\S]*?)\];/)[1].matchAll(/'([^']+)'/g)].map(m => m[1]);
 
@@ -12,7 +14,8 @@ const listed = [...sw.match(/const FILES = \[([\s\S]*?)\];/)[1].matchAll(/'([^']
 function filesIn(dir) {
   return readdirSync(dir).flatMap(name => {
     const path = join(dir, name);
-    return statSync(path).isDirectory() ? filesIn(path) : [relative(SITE, path)];
+    // AUDIT: Windows gives "kit\ui.js"; sw.js lists web paths with "/", so normalise before comparing.
+    return statSync(path).isDirectory() ? filesIn(path) : [relative(SITE, path).replaceAll('\\', '/')];
   });
 }
 
