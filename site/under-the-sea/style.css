@@ -69,7 +69,8 @@
   display:flex; flex-direction:column; align-items:center; justify-content:flex-end; gap:6px; padding-bottom:10px;
   box-shadow:inset 0 -8px 0 var(--key-edge); transition:background .05s }
 .wkey:last-child { margin-right:0 }
-.wkey.down, .wkey.lit { background:color-mix(in srgb, var(--c) 45%, var(--key-white)); box-shadow:inset 0 -3px 0 var(--key-edge) }
+.wkey.chosen { background:color-mix(in srgb, var(--c) 22%, var(--key-white)) }  /* the chosen friend's key, softly lit */
+.wkey.down { background:color-mix(in srgb, var(--c) 45%, var(--key-white)); box-shadow:inset 0 -3px 0 var(--key-edge) }
 .wkey.midc { box-shadow:inset 0 -8px 0 var(--key-edge), inset 0 4px 0 #4C8FE0 }
 .wkey .dot { width:clamp(12px,2.2vw,22px); aspect-ratio:1; border-radius:50%; background:var(--c); border:2px solid #27213D }
 .wkey .nl { font:800 clamp(15px,2.3vw,22px)/1 var(--font-display) }

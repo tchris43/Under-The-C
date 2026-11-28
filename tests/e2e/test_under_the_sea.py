@@ -80,21 +80,41 @@ def test_a_chosen_friends_glow_is_never_cut_off(browser_setup, base_url, size, s
         context.close()
 
 
-# Tapping a friend lights its piano key, exactly as tapping the key does (a short flash, class "lit").
-# Counter-example: drop flashKey(i) from onNote() in under-the-sea/main.js and both cases fail.
+# The chosen friend's piano key stays softly lit (class "chosen") until another friend or key is chosen,
+# whether the friend or the key was tapped.
+# Counter-example: the old 0.22-second flash (the key goes out after 400ms), or two keys left lit after a new choice.
 @pytest.mark.parametrize("tap", ["friend", "key"])
-def test_the_chosen_friends_key_lights_up(browser_setup, base_url, tap):
+def test_the_chosen_friends_key_stays_lit_until_the_next_choice(browser_setup, base_url, tap):
+    browser, _ = browser_setup
+    context = browser.new_context(viewport={"width": 1024, "height": 1366}, has_touch=True)
+    page = context.new_page()
+    target = (lambda i: f'#world .char[data-i="{i}"]') if tap == "friend" else (lambda i: f'#piano .wkey[data-i="{i}"]')
+    lit = lambda: page.locator("#piano .wkey.chosen").evaluate_all("els => els.map(e => e.dataset.i)")
+    try:
+        page.goto(base_url + "under-the-sea/")
+        page.tap(target(3))  # Finn Flounder's F
+        assert lit() == ["3"], "the key lights up, and only that key"
+        page.wait_for_timeout(1000)
+        assert lit() == ["3"], "and stays lit"
+        page.tap(target(5))  # Annie Anemone's A
+        assert lit() == ["5"], "until another friend is chosen"
+    finally:
+        context.close()
+
+
+# iPad held upright: the scene is tall, so the staff and friends grow into the sky instead of leaving it empty.
+# Counter-example: the old layout, which kept the drawing 1000 units wide (sea friends about 79px across, right-hand
+# friends about 79px, everyone about 65px). Fitting on one screen is checked in test_no_scroll.py.
+@pytest.mark.parametrize("section,least", [("sea", 100), ("right", 100), ("all", 72)])
+def test_on_an_upright_ipad_the_friends_grow_into_the_sky(browser_setup, base_url, section, least):
     browser, _ = browser_setup
     context = browser.new_context(viewport={"width": 1024, "height": 1366}, has_touch=True)
     page = context.new_page()
     try:
         page.goto(base_url + "under-the-sea/")
-        key = page.locator('#piano .wkey[data-i="3"]')  # Finn Flounder's F
-        assert "lit" not in key.get_attribute("class").split()
-        page.tap('#world .char[data-i="3"]' if tap == "friend" else '#piano .wkey[data-i="3"]')
-        assert "lit" in key.get_attribute("class").split(), "the key lights up"
-        assert page.locator('#piano .wkey.lit').count() == 1, "only that key"
-        page.wait_for_timeout(400)
-        assert "lit" not in key.get_attribute("class").split(), "and goes out again, like a key press"
+        page.click(f'#sectionSeg button[data-v="{section}"]')
+        page.wait_for_timeout(200)
+        sizes = page.locator("#world .char .ring").evaluate_all("els => els.map(e => e.getBoundingClientRect().width)")
+        assert min(sizes) >= least, f"friends are {min(sizes):.0f}px across (their glow); at least {least}px"
     finally:
         context.close()

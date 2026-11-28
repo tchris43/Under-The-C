@@ -41,20 +41,39 @@ if (!(state.section in SECTIONS)) state.section = 'sea';
 const world = $('#world');
 const visible = () => SECTIONS[state.section].notes;
 
-/** @param {number} width  @param {number} count */
-function layoutFor(width, count) {
+/**
+ * How wide the drawing is (in drawing units) and how big the friends are. The drawing is scaled to the scene's width,
+ * so a narrower drawing shows everything bigger.
+ * @param {number} width  @param {number} height  the scene box, in CSS px
+ * @param {number} count  @param {number} viewHeight  the section's slice of the drawing, in drawing units
+ */
+function layoutFor(width, height, count, viewHeight) {
   if (width < 700) {
     const W = count > 8 ? 820 : 640, s = count > 8 ? .74 : .9;
     // The last friend sits a whole glow (radius 40, scaled) plus a margin in from the edge, so its glow is never cut off.
     return { W, x0: 150, x1: W - Math.ceil(GLOW * s) - 8, s, clefX: 16, xs: {} };
   }
-  return { W: 1000, x0: 205, x1: 950, s: count > 8 ? .82 : 1, clefX: 24, xs: {} };
+  const s = count > 8 ? .82 : 1, edge = Math.ceil(GLOW * s) + 8, x0 = 175;
+  // A tall scene (an iPad held upright) would leave empty sky above a 1000-wide drawing. Narrow the drawing until
+  // it fills the scene's height, but never so far that neighbouring friends' glows overlap by more than a tenth.
+  // AUDIT: height is the scene's own box, which the one-screen layout sets from what's left; it never depends on
+  // the drawing, so this can't feed back into itself. If .scene ever sizes from its content, this loops.
+  const fill = height > 0 ? width / height * viewHeight : 1000;
+  const narrowest = x0 + (count - 1) * 2 * GLOW * s * .9 + edge;
+  const W = Math.round(Math.min(1000, Math.max(narrowest, fill)));
+  if (W >= 1000) return { W: 1000, x0: 205, x1: 950, s, clefX: 24, xs: {} };
+  return { W, x0, x1: W - edge, s, clefX: 24, xs: {} };
+}
+/** The layout for the scene as it is now. */
+function currentLayout() {
+  const scene = $('#scene'), [vy0, vy1] = SECTIONS[state.section].view;
+  return layoutFor(scene.clientWidth || 1000, scene.clientHeight, visible().length, vy1 - vy0);
 }
 
 /* ---------- The world ---------- */
 function buildScene() {
   const vis = visible();
-  const L = layoutFor($('#scene').clientWidth || 1000, vis.length);
+  const L = currentLayout();
   state.layout = L;
   const { W, s } = L, left = L.clefX, right = W - 20;
   vis.forEach((i, k) => { L.xs[i] = L.x0 + (L.x1 - L.x0) * k / Math.max(1, vis.length - 1); });
@@ -182,7 +201,6 @@ function onNote(i, { sound = true } = {}) {
   state.sel = i;
   if (sound) Sound.play(NOTES[i].midi);
   applySel(true);
-  flashKey(i);
   if (!state.touched) { state.touched = true; $('#hint').classList.add('gone'); }
 }
 
@@ -191,6 +209,8 @@ function applySel(animate) {
   const i = state.sel, n = NOTES[i], L = state.layout;
   if (L.xs[i] === undefined) return;
   world.querySelectorAll('.char').forEach(c => c.classList.toggle('sel', Number(/** @type {HTMLElement} */ (c).dataset.i) === i));
+  // The chosen friend's piano key stays softly lit until another friend or key is chosen.
+  document.querySelectorAll('#piano .wkey').forEach(k => k.classList.toggle('chosen', Number(/** @type {HTMLElement} */ (k).dataset.i) === i));
   const home = world.querySelector('#home');
   if (home) {
     const y = yOf(n.step), isLine = n.step % 2 === 0, hgt = isLine ? 10 : 34;
@@ -229,12 +249,6 @@ function sparkle(i) {
   }).join('');
   fx.appendChild(g);
   setTimeout(() => g.remove(), 750);
-}
-/** @param {number} i */
-function flashKey(i) {
-  const k = /** @type {HTMLElement & { _t?: number } | null} */ (document.querySelector(`#piano .wkey[data-i="${i}"]`));
-  if (!k) return;
-  k.classList.add('lit'); clearTimeout(k._t); k._t = window.setTimeout(() => k.classList.remove('lit'), 220);
 }
 
 /* ---------- Touch and mouse ---------- */
@@ -359,6 +373,6 @@ $('#brandIcon').innerHTML = clownfish();
 markSection(state.section);
 setSection(state.section);
 new ResizeObserver(() => {
-  if (layoutFor($('#scene').clientWidth, visible().length).W !== state.layout.W) buildScene();
+  if (currentLayout().W !== state.layout.W) buildScene();
 }).observe($('#scene'));
 enableOffline();

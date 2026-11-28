@@ -81,3 +81,22 @@ def test_settings_button_shares_the_header_row_on_a_phone(phone, base_url, path)
     phone.click("#playBtn")
     gear, home = phone.locator("#settingsBtn").bounding_box(), phone.locator("a.btn.home").bounding_box()
     assert gear["y"] < home["y"] + home["height"], "gear is beside the Games button, not below it"
+
+
+# 5. On an iPad the twelve friends sit in two even rows of six (not 11 + 1, which left G alone on a row).
+@pytest.mark.parametrize("size", [(1024, 1366), (810, 1000), (1366, 1024), (1080, 740)],
+                         ids=["ipad-portrait", "safari-portrait", "ipad-landscape", "safari-landscape"])
+def test_the_friends_sit_in_two_even_rows_on_an_ipad(browser_setup, base_url, size):
+    # Counter-example: the old auto-fill grid, which wrapped 11 + 1 in iPad portrait and 12 in one row in landscape.
+    browser, _ = browser_setup
+    context = browser.new_context(viewport={"width": size[0], "height": size[1]}, has_touch=True)
+    page = context.new_page()
+    try:
+        page.goto(base_url + "who-lives-here/")
+        tops = page.locator("#friends .fr").evaluate_all("els => els.map(e => Math.round(e.getBoundingClientRect().top))")
+        rows = {}
+        for t in tops:
+            rows[t] = rows.get(t, 0) + 1
+        assert list(rows.values()) == [6, 6], f"rows of 6 + 6, got {list(rows.values())}"
+    finally:
+        context.close()

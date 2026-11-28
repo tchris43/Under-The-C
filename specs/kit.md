@@ -48,6 +48,7 @@ What every game relies on. Tests: `tests/unit/notes.test.js`, `tests/unit/logic.
 Rules tests: `tests/unit/settings.test.js`. Screen tests: `tests/e2e/test_setup_screen.py` and each quiz game's browser tests. Under the Sea keeps its own view buttons.
 30. A quiz game opens on the setup screen with this device's last choices; Play starts it; the settings icon brings it back.
 31. Friends: hand shortcuts (Left, Right, Both) or tap friends one by one, low to high. A shortcut lights up only for an exact hand.
+    On an iPad (either way up) the twelve friends sit in two even rows of six.
 32. At least 2 friends. Level 2 needs two friends a step or skip apart; the screen says why when Play is off.
 33. The chosen friends are shared by every game; answer mode, letters on keys and level are saved per game.
 34. Broken saved choices fall back to the defaults. A device with no saved friends keeps its old hand choice.
@@ -72,5 +73,6 @@ Rules tests: `tests/unit/settings.test.js`. Screen tests: `tests/e2e/test_setup_
 ## The "You did it!" celebration (kit.css finish panel) — tests/e2e/test_celebration.py
 39. At the end of a quiz game the celebration covers the finished game completely: no question, Hear button or staff shows through.
 40. The title pops in, then the friends from the game hop in one after another, left to right.
-41. The friends sit in tidy rows: 10 across on an iPad, 5 + 5 on a phone, all on screen.
+41. The friends sit in tidy rows, all on screen: 5 + 5, or one row of 10 when the card is very wide (Safari on its side).
+    The title and friends grow with the card, so on an iPad they fill it, still with no scrolling.
 42. With "reduce motion" on, nothing moves: the celebration is simply there, settled.
