@@ -46,6 +46,11 @@ const FILES = [
   'note-flash/index.html',
   'note-flash/main.js',
   'note-flash/style.css',
+  'parents/',
+  'parents/index.html',
+  'parents/main.js',
+  'parents/style.css',
+  'parents/shot.png',
 ];
 
 self.addEventListener('install', event => {

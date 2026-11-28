@@ -23,7 +23,8 @@ def test_games_work_offline_after_one_visit(page, base_url, browser_setup):
     try:
         for path in PAGES:
             page.goto(base_url + path)
-            assert page.locator("h1").inner_text() in ("Under the C", "Under the Sea", "Who Lives Here?", "Note Flash")
+            assert page.locator("h1").inner_text() in ("Under the C", "Under the Sea", "Who Lives Here?", "Note Flash",
+                                                       "The way a real piano teacher teaches notes: one friend at a time.")
         # and a game still plays
         page.goto(base_url + "note-flash/")
         page.click("#playBtn")
