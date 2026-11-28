@@ -122,3 +122,27 @@ kbd { font:800 12px/1 var(--font-body); border:1.5px solid var(--ink-soft); bord
   .story { font-size: 16px }
   .piano { height: clamp(110px, 20dvh, 170px) }
 }
+
+/* Phone: everything on one screen (specs/kit.md 37). The header packs into two rows (title, then the friend
+   choice with an icon-only Parade button), the card tightens, and the scene takes what's left. */
+@media (max-width: 560px) {
+  body[data-screen="play"] .app.wide { padding-top: 10px; gap: 10px }
+  .top { gap: 8px }
+  .top .btn.home { padding: 0 10px; font-size: 0; gap: 0 }   /* arrow only; its label stays for screen readers */
+  .top .btn.home svg { width: 22px; height: 22px }
+  .brand { gap: 10px }
+  .brand h1 { font-size: 24px }
+  .brand p { font-size: 13px; margin-top: 2px }
+  .controls { width: 100%; flex-wrap: nowrap; gap: 8px }
+  #sectionSeg { flex: 1; min-width: 0 }
+  #sectionSeg button { flex: 1 1 auto; padding: 0 6px; font-size: 13px; white-space: nowrap; letter-spacing: -.01em }
+  #paradeBtn { flex: none; padding: 0 12px }
+  #paradeBtn span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap }
+  body[data-screen="play"] .scene.grow { min-height: 150px }
+  .card { padding: 10px 12px; gap: 10px }
+  .card-avatar { width: 56px; height: 56px } .card-avatar svg { width: 48px; height: 48px }
+  .letter { width: 36px; height: 36px; font-size: 20px }
+  .card h2 { font-size: 22px }
+  .story { font-size: 15px; line-height: 1.35 }
+  .card .replay { min-height: 40px }
+}
