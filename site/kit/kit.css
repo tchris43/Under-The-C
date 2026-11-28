@@ -121,3 +121,76 @@ body:not(.kb) .kbtip { display: none }
   font: 800 17px/1.2 var(--font-body); animation: popin .35s cubic-bezier(.3,1.6,.5,1) }
 .update-note span { white-space: nowrap }
 .update-note .btn { min-height: 44px }
+
+/* Shared setup screen (kit/setup.js): comes before a quiz game; the settings button brings it back */
+.gear.btn { min-height: 48px; width: 52px; padding: 0 }
+.gear.btn svg { width: 26px; height: 26px }
+.setup { background: var(--surface); border: 3px solid var(--line); border-radius: 24px; box-shadow: 0 6px 0 var(--line);
+  padding: clamp(16px, 3vw, 26px); display: flex; flex-direction: column; gap: 20px }
+.setup h2 { margin: 0; font: 800 clamp(24px, 3.6vw, 32px)/1.1 var(--font-display) }
+.setup .field { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; max-width: 100% }
+.setup .field .seg { max-width: 100% }
+.setup h3 { margin: 0; font: 800 17px/1.2 var(--font-body); color: var(--ink-soft) }
+.friends { display: grid; grid-template-columns: repeat(auto-fill, minmax(66px, 1fr)); gap: 8px; width: 100% }
+.fr { --c: #ccc; display: flex; flex-direction: column; align-items: center; gap: 2px; min-height: 84px; padding: 6px 2px;
+  border: 3px solid var(--line); border-radius: 16px; background: var(--surface); color: var(--ink-soft); cursor: pointer;
+  font: 800 18px/1 var(--font-display); touch-action: manipulation; box-shadow: 0 4px 0 var(--line); opacity: .45; filter: grayscale(.9);
+  transition: opacity .12s, filter .12s, transform .06s }
+.fr svg { width: 50px; height: 50px; overflow: visible }
+.fr[aria-pressed="true"] { background: color-mix(in srgb, var(--c) 35%, var(--surface)); color: var(--ink); opacity: 1; filter: none }
+.fr:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--line) }
+.fr.midc { box-shadow: 0 4px 0 var(--line), inset 0 -5px 0 #4C8FE0 }
+.play-bar { position: sticky; bottom: calc(8px + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; gap: 14px;
+  background: var(--surface); padding-top: 6px }
+.play-bar .hint { flex: 1; margin: 0; font-weight: 700; font-size: 15px; color: var(--ink-soft) }
+.play-bar .hint.warn { color: #C2412D }
+.play.btn { min-height: 60px; font-size: 22px; padding: 0 28px }
+.play.btn svg { width: 26px; height: 26px }
+.game { display: flex; flex-direction: column; gap: 16px }
+.finish-btns { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center }
+/* The settings button shares the header row with the Games button and title, also on a phone */
+.top:has(.gear) { flex-wrap: nowrap }
+.top:has(.gear) .brand > div { min-width: 0 }
+.top .gear { flex: none }
+@media (max-width: 560px) {
+  .top:has(.gear) .brand h1 { font-size: 24px }
+  .top:has(.gear) .btn.home { padding: 0 10px; font-size: 0; gap: 0 }  /* arrow only; its label stays for screen readers */
+  .top:has(.gear) .btn.home svg { width: 22px; height: 22px }
+  .gear.btn { width: 46px; min-height: 44px }
+  .friends { grid-template-columns: repeat(auto-fill, minmax(56px, 1fr)) }
+  .fr svg { width: 42px; height: 42px }
+  .setup .seg { flex-wrap: wrap }
+}
+
+/* One-screen game layout: during play a kid never scrolls (specs/kit.md 30, tests/e2e/test_no_scroll.py).
+   The page is exactly the visible height (dvh leaves out Safari's bars; from the home screen it is the whole
+   screen). Header, stickers and answers keep their size; the staff gets whatever height is left and scales
+   to fit. Answer buttons never shrink below 44px: small fingers come before a big staff.
+   On a screen smaller than any we target, the staff stops at 200px and the page may scroll instead. */
+body[data-screen="play"] .app {
+  height: calc(100vh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
+  padding-bottom: 14px;
+}
+body[data-screen="play"] .game { flex: 1; min-height: 0 }
+body[data-screen="play"] .stage { flex: 1; min-height: 200px; display: flex }
+body[data-screen="play"] .stage > .sheet { flex: 1; min-height: 0; display: flex; flex-direction: column }
+body[data-screen="play"] .stage .staff { flex: 1; min-height: 0; width: 100%; height: 100% }
+body[data-screen="play"] .grow { flex: 1; min-height: 200px }
+
+/* Short landscape screens (an iPad on its side): tighter spacing, nothing smaller than a finger */
+@media (orientation: landscape) and (max-height: 900px) {
+  body[data-screen="play"] .app { padding-top: 10px; padding-bottom: 10px; gap: 10px }
+  body[data-screen="play"] .game { gap: 10px }
+  body[data-screen="play"] .slot { max-width: 40px }
+}
+/* The question and the Hear button get their own strip above the staff, so a narrower staff never sits under them */
+body[data-screen="play"] .stage > .sheet { padding-top: 54px }
+body[data-screen="play"] .stage .staff { margin-top: 0 }
+
+/* In a game the update note sits in the header row, so it never covers an answer (specs/kit.md 31) */
+.update-note.in-header { position: static; transform: none; width: auto; max-width: none; flex: none; margin-left: auto;
+  padding: 4px 4px 4px 12px; gap: 8px; font-size: 15px; box-shadow: 0 4px 0 var(--line); border-radius: 16px }
+.update-note.in-header .btn { min-height: 40px; padding: 0 12px; box-shadow: 0 3px 0 var(--line) }
+.top:has(.update-note.in-header) { gap: 10px }
+@media (max-width: 560px) { .update-note.in-header span { display: none } }

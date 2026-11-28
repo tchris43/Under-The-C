@@ -24,8 +24,10 @@
 .pk .mini { width: clamp(34px, 6vw, 54px); height: clamp(34px, 6vw, 54px); overflow: visible; animation: popin .4s cubic-bezier(.3,1.6,.5,1) }
 .bk { position: absolute; top: 0; height: 58%; background: var(--key-black); border: 2.5px solid var(--line); border-radius: 0 0 10px 10px; z-index: 2; transform: translateX(-50%); cursor: pointer; padding: 0 }
 .bk.down { background: #4A4366 }
-.piano-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap }
-.piano-foot .tip { margin: 0; font-weight: 700; font-size: 14px; color: var(--ink-soft) }
-.piano-foot .seg { box-shadow: none; border-width: 2.5px; border-radius: 12px }
-.piano-foot .seg button { min-height: 36px; font-size: 14px }
 .lk:disabled, .pk:disabled { cursor: default }
+.piano-wrap .tip { margin: 0; font-weight: 700; font-size: 14px; color: var(--ink-soft) }
+
+@media (orientation: landscape) and (max-height: 900px) {
+  .piano { height: clamp(120px, 22dvh, 190px) }
+  .lk { min-height: clamp(56px, 10dvh, 80px) }
+}

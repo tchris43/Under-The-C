@@ -103,3 +103,22 @@ kbd { font:800 12px/1 var(--font-body); border:1.5px solid var(--ink-soft); bord
   .char .bob, .char .hop.go, .spark, .card.pop, .bubble, .weed { animation:none !important }
   .spark, .bubble { display:none }
 }
+
+/* One screen, no scrolling: the scene takes the height that's left (kit.css), the drawing scales to fit it */
+.scene { display: flex }
+.scene svg { flex: 1; min-height: 0; height: 100% }
+@media (orientation: landscape) and (max-height: 900px) {
+  /* Scene on the left, the friend's card on the right, the piano across the bottom */
+  body[data-screen="play"] .app.wide { display: grid; grid-template-columns: minmax(0, 1fr) minmax(260px, 32%);
+    grid-template-rows: auto minmax(0, 1fr) auto; grid-template-areas: "top top" "scene card" "piano piano" }
+  .app.wide > .top { grid-area: top } .app.wide > .scene { grid-area: scene; min-height: 0 }
+  .app.wide > .card { grid-area: card; min-height: 0; overflow: auto; grid-template-columns: auto 1fr; align-content: start; gap: 10px; padding: 12px 14px }
+  .app.wide > .piano-wrap { grid-area: piano }
+  .card .card-avatar { width: 64px; height: 64px } .card .card-avatar svg { width: 56px; height: 56px }
+  .card .card-body { grid-column: 1 / -1; grid-row: 2 }
+  .card .card-head { grid-column: 2; grid-row: 1 }
+  .card .replay { grid-column: 1 / -1; justify-self: start }
+  .letter { width: 40px; height: 40px; font-size: 22px }
+  .story { font-size: 16px }
+  .piano { height: clamp(110px, 20dvh, 170px) }
+}

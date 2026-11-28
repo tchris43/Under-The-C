@@ -27,3 +27,9 @@ body.kb .choice .kcap { display: block }
   .choice { border-radius: 18px }
   .choice .nm { font-size: 13px }
 }
+
+@media (orientation: landscape) and (max-height: 900px) {
+  .choice { min-height: clamp(110px, 19dvh, 170px); padding: 8px }
+  .choice svg { width: clamp(64px, 11dvh, 100px); height: clamp(64px, 11dvh, 100px) }
+  .choice.int svg { height: clamp(56px, 10dvh, 96px) }
+}
