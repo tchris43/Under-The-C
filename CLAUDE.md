@@ -43,5 +43,9 @@ space) comes from her; the specs in `specs/` say what each game does in plain wo
 
 ## Commands
 - `npm run serve` then open http://localhost:4173
-- `npm run check:fast` (seconds) and `npm run check` (about a minute)
+- `npm run check:fast` (seconds) and `npm run check` (about a minute). Both run through `bash`, so they
+  work on Windows, Mac and Linux.
+- Run the checks before every commit, never after. Never pipe check output through `tail`, `head` or `grep`
+  in a way that hides the exit code; a failure must stop the commit.
+- Promo or polish screenshots go in `shots/` at the repo root. It is git-ignored, so nothing there ships.
 - Browser tests need `pip install -r requirements-dev.txt` and `python3 -m playwright install chromium webkit`.
