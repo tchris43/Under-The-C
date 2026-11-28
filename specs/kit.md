@@ -68,3 +68,9 @@ Rules tests: `tests/unit/settings.test.js`. Screen tests: `tests/e2e/test_setup_
     Shared layout: `body[data-screen="play"]` in kit.css; the part that should take the leftover height is `.stage`
     (quiz games) or has class `grow`.
 38. In a game, the "New games are ready!" note sits in the header row, so it never covers an answer.
+
+## The "You did it!" celebration (kit.css finish panel) — tests/e2e/test_celebration.py
+39. At the end of a quiz game the celebration covers the finished game completely: no question, Hear button or staff shows through.
+40. The title pops in, then the friends from the game hop in one after another, left to right.
+41. The friends sit in tidy rows: 10 across on an iPad, 5 + 5 on a phone, all on screen.
+42. With "reduce motion" on, nothing moves: the celebration is simply there, settled.
